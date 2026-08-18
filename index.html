@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Our Love Letters</title>
+<style>
+  :root{
+    --bg-1:#241a29;
+    --bg-2:#3c2a44;
+    --bg-3:#4a2f3f;
+    --paper:#fbf3e4;
+    --paper-2:#f5ead3;
+    --rule:#e3d2ae;
+    --margin-line:#e2a3ae;
+    --ink:#3d2b2e;
+    --ink-soft:#8a7368;
+    --rose:#e8a0ac;
+    --rose-deep:#d1499a;
+    --gold:#caa24c;
+    --gold-deep:#a97f2e;
+    --mint:#5fa78c;
+    --lavender:#7c8fc2;
+    --magenta:#cf4497;
+    --sage:#7fa268;
+    --glass-hi:rgba(255,255,255,.20);
+    --glass-lo:rgba(255,255,255,.04);
+    --font-script:"Snell Roundhand","Bradley Hand","Segoe Script","Apple Chancery",cursive;
+    --font-hand:"Noteworthy","Comic Sans MS","Segoe Print",cursive;
+    --font-body:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --font-label:-apple-system,"Avenir Next","Helvetica Neue",Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 70% 45% at 25% 0%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,190,200,.08), transparent 60%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  button{font-family:inherit;}
+  ::selection{background:var(--rose); color:#fff;}
+
+  a{color:inherit;}
+
+  /* ---------- ambient floating hearts ---------- */
+  .ambient{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+  .ambient span{
+    position:absolute; bottom:-10%; font-size:14px; opacity:.18; color:var(--rose);
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0;}
+    10%{opacity:.22;}
+    90%{opacity:.14;}
+    100%{ transform:translateY(-115vh) translateX(20px) rotate(25deg); opacity:0;}
+  }
+
+  /* ---------- HUB ---------- */
+  #hub{
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:8vh 20px 6vh;
+    text-align:center;
+    transition:opacity .5s ease, filter .5s ease, transform .5s ease;
+  }
+  #hub.dimmed{opacity:0; filter:blur(6px); transform:scale(.97); pointer-events:none;}
+
+  .eyebrow{
+    font-family:var(--font-label);
+    font-size:11px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:rgba(255,235,240,.55);
+    margin:0 0 14px;
+  }
+
+  h1.title{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:clamp(42px, 8vw, 74px);
+    line-height:1;
+    margin:0;
+    color:#fbf3e4;
+    text-shadow:0 2px 22px rgba(0,0,0,.35);
+  }
+
+  .subtitle{
+    font-family:var(--font-body);
+    font-style:italic;
+    color:rgba(251,243,228,.72);
+    font-size:clamp(13px,2.2vw,16px);
+    margin:14px 0 0;
+    max-width:420px;
+  }
+
+  .day-pill{
+    display:inline-flex;
+    align-items:baseline;
+    gap:9px;
+    margin:20px 0 0;
+    padding:9px 20px;
+    border-radius:30px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.20);
+    backdrop-filter:blur(6px);
+  }
+  .day-pill .num{
+    font-family:var(--font-script);
+    font-size:28px;
+    line-height:1;
+    color:var(--rose);
+  }
+  .day-pill .lbl{
+    font-family:var(--font-label);
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.6);
+  }
+
+  /* ---------- jars ---------- */
+  .jars{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    gap:40px 30px;
+    margin-top:18px;
+  }
+  .jar-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:clamp(190px,42vw,240px);
+  }
+  .jar-label{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:clamp(20px,3.6vw,25px);
+    margin:0;
+    color:#fbf3e4;
+    text-shadow:0 2px 14px rgba(0,0,0,.3);
+  }
+  .jar-caption{
+    margin:16px 0 0;
+    font-family:var(--font-label);
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.42);
+  }
+
+  .jar-wrap{
+    position:relative;
+    width:100%;
+    margin:18px auto 0;
+    perspective:900px;
+  }
+  .jar-empty .jar-body{ opacity:.7; }
+  .ghost-env{
+    position:absolute; left:50%; top:54%; transform:translate(-50%,-50%) rotate(-3deg);
+    width:66px; height:46px;
+    border:1.5px dashed rgba(255,255,255,.4);
+    border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-label); font-size:9.5px; letter-spacing:.03em;
+    line-height:1.35; text-align:center; padding:4px;
+    color:rgba(255,255,255,.5);
+  }
+  .jar-lid{
+    width:46%;
+    height:26px;
+    margin:0 auto;
+    border-radius:14px;
+    background:linear-gradient(180deg,#e6c274,var(--gold-deep));
+    box-shadow:0 3px 0 rgba(0,0,0,.2), inset 0 -3px 4px rgba(0,0,0,.18), inset 0 2px 2px rgba(255,255,255,.4);
+    position:relative; z-index:4;
+  }
+  .jar-neck{
+    width:38%;
+    height:16px;
+    margin:-3px auto 0;
+    background:linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+    border-left:1.5px solid rgba(255,255,255,.35);
+    border-right:1.5px solid rgba(255,255,255,.35);
+    position:relative; z-index:3;
+  }
+  .jar-body{
+    position:relative;
+    width:100%;
+    height:min(60vw,240px);
+    margin-top:-2px;
+    border-radius:26px 26px 58px 58px/26px 26px 90px 90px;
+    background:
+      linear-gradient(100deg, rgba(255,255,255,.22), rgba(255,255,255,.02) 35%, rgba(255,255,255,.10) 70%, rgba(255,255,255,.22)),
+      linear-gradient(200deg, rgba(255,205,215,.10), rgba(180,200,255,.06));
+    border:1.5px solid rgba(255,255,255,.30);
+    box-shadow:inset 0 -26px 46px rgba(0,0,0,.20), inset 0 10px 18px rgba(255,255,255,.08), 0 26px 50px rgba(0,0,0,.38);
+    overflow:visible;
+    z-index:2;
+  }
+  .jar-body::after{
+    content:"";
+    position:absolute; left:10%; top:6%; width:14%; height:70%;
+    background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0));
+    border-radius:50%;
+    filter:blur(2px);
+    pointer-events:none;
+  }
+
+  .envelopes{position:absolute; inset:0;}
+
+  .env{
+    position:absolute;
+    width:64px; height:44px;
+    background:var(--paper);
+    border-radius:3px 3px 5px 5px;
+    box-shadow:0 6px 12px rgba(0,0,0,.30), 0 1px 0 rgba(255,255,255,.5) inset;
+    cursor:pointer;
+    border:none;
+    padding:0;
+    transition:transform .25s ease, box-shadow .25s ease;
+    outline-offset:3px;
+  }
+  .env:hover, .env:focus-visible{
+    transform:translateY(-6px) rotate(0deg) scale(1.05) !important;
+    box-shadow:0 14px 22px rgba(0,0,0,.4);
+    z-index:20 !important;
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; right:0; height:60%;
+    clip-path:polygon(0 0,100% 0,50% 100%);
+  }
+  .env-seal{
+    position:absolute; left:50%; top:58%; transform:translate(-50%,-50%);
+    width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #e8c988, var(--gold-deep));
+    color:#4a2f10;
+    font-family:var(--font-label); font-weight:700; font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 3px rgba(0,0,0,.35);
+  }
+  .env-emoji{
+    position:absolute; top:-9px; right:-8px; font-size:15px;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
+  }
+  .env-done::before{
+    content:"♥";
+    position:absolute; bottom:-8px; left:-6px;
+    font-size:12px; color:var(--rose-deep);
+    text-shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+
+  /* scattered placement */
+  .env:nth-child(1){ left:6%;  bottom:6%;  transform:rotate(-9deg);  z-index:6;  }
+  .env:nth-child(2){ left:34%; bottom:2%;  transform:rotate(6deg);   z-index:7;  }
+  .env:nth-child(3){ left:58%; bottom:10%; transform:rotate(-4deg);  z-index:8;  }
+  .env:nth-child(4){ left:14%; bottom:30%; transform:rotate(4deg);   z-index:9;  }
+  .env:nth-child(5){ left:42%; bottom:34%; transform:rotate(-7deg);  z-index:10; }
+  .env:nth-child(6){ left:22%; bottom:56%; transform:rotate(8deg);   z-index:11; }
+  .env:nth-child(7){ left:70%; bottom:30%; transform:rotate(-5deg);  z-index:12; }
+  .env:nth-child(8){ left:6%;  bottom:56%; transform:rotate(5deg);   z-index:13; }
+  .env:nth-child(9){ left:50%; bottom:56%; transform:rotate(-6deg);  z-index:14; }
+  .env:nth-child(10){ left:34%; bottom:56%; transform:rotate(7deg);  z-index:15; }
+  .env:nth-child(11){ left:70%; bottom:56%; transform:rotate(-8deg); z-index:16; }
+  .env:nth-child(12){ left:22%; bottom:78%; transform:rotate(6deg);  z-index:17; }
+
+  .env:nth-child(1) .env-flap{background:var(--rose);}
+  .env:nth-child(2) .env-flap{background:var(--mint);}
+  .env:nth-child(3) .env-flap{background:var(--lavender);}
+  .env:nth-child(4) .env-flap{background:var(--magenta);}
+  .env:nth-child(5) .env-flap{background:var(--sage);}
+  .env:nth-child(6) .env-flap{background:var(--gold);}
+  .env:nth-child(7) .env-flap{background:var(--rose-deep);}
+  .env:nth-child(8) .env-flap{background:var(--mint);}
+  .env:nth-child(9) .env-flap{background:var(--lavender);}
+  .env:nth-child(10) .env-flap{background:var(--magenta);}
+  .env:nth-child(11) .env-flap{background:var(--sage);}
+  .env:nth-child(12) .env-flap{background:var(--gold);}
+
+  .hub-hint{
+    margin-top:26px;
+    font-family:var(--font-label);
+    font-size:12px;
+    letter-spacing:.05em;
+    color:rgba(251,243,228,.55);
+  }
+
+  .signoff{
+    margin-top:38px;
+    font-family:var(--font-script);
+    font-size:20px;
+    color:rgba(251,243,228,.55);
+  }
+
+  /* ---------- READER ---------- */
+  #reader{
+    position:fixed; inset:0; z-index:30;
+    display:flex; align-items:center; justify-content:center;
+    padding:min(6vh,40px) 18px;
+    opacity:0; pointer-events:none;
+    transform:scale(.96);
+    transition:opacity .45s ease, transform .45s ease;
+  }
+  #reader.active{ opacity:1; pointer-events:auto; transform:scale(1); }
+
+  .paper{
+    position:relative;
+    width:min(680px,92vw);
+    max-height:88vh;
+    background:var(--paper);
+    border-radius:6px;
+    box-shadow:0 30px 60px rgba(0,0,0,.5), 0 2px 0 rgba(255,255,255,.3) inset;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .paper::before{ /* margin rule */
+    content:"";
+    position:absolute; top:0; bottom:0; left:52px; width:1.5px;
+    background:var(--margin-line); opacity:.55;
+  }
+  .paper[data-parity="odd"]{ transform:rotate(-.4deg); }
+  .paper[data-parity="even"]{ transform:rotate(.4deg); }
+
+  .paper-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:22px 30px 10px 62px;
+    font-family:var(--font-label); font-size:11px; letter-spacing:.06em;
+    color:var(--ink-soft);
+    flex:0 0 auto;
+  }
+  .paper-head span i{
+    font-style:normal; border-bottom:1px dashed var(--ink-soft); padding-bottom:1px;
+  }
+
+  .paper-body{
+    --line:33px;
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding:33px 34px 46px 62px;
+    background:
+      repeating-linear-gradient(var(--paper) 0 calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px) var(--line)),
+      var(--paper);
+    background-attachment:local;
+    scrollbar-width:thin;
+    scrollbar-color:var(--rose) transparent;
+  }
+  .paper-body::-webkit-scrollbar{width:8px;}
+  .paper-body::-webkit-scrollbar-thumb{background:var(--rose); border-radius:8px;}
+
+  .paper-body p{
+    font-size:clamp(15px,2vw,17px);
+    line-height:var(--line);
+    margin:0 0 var(--line);
+    color:var(--ink);
+  }
+  .paper-body p strong{ letter-spacing:.03em; }
+  .paper-body p.ps{ font-style:italic; color:var(--ink-soft); margin-top:var(--line);}
+  .continues{
+    font-family:var(--font-label); font-style:italic; font-size:11.5px;
+    color:var(--ink-soft); text-align:right; margin-top:-8px;
+  }
+
+  .heading{
+    display:inline-block;
+    font-family:var(--font-label);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.06em;
+    padding:6px 12px;
+    border-radius:5px;
+    margin:var(--line) 0 var(--line);
+  }
+  .heading--mint{ background:rgba(95,167,140,.16); color:var(--mint); border:1.4px solid var(--mint); }
+  .heading--lavender{ background:rgba(124,143,194,.16); color:var(--lavender); border:1.4px solid var(--lavender); }
+  .heading--magenta{ background:rgba(207,68,151,.14); color:var(--magenta); border:1.4px solid var(--magenta); }
+  .heading--sage{ background:rgba(127,162,104,.16); color:var(--sage); border:1.4px solid var(--sage); }
+
+  .letter-questions{ margin:var(--line) 0 var(--line); padding-left:20px; }
+  .letter-questions li{
+    font-size:clamp(15px,2vw,17px); line-height:var(--line); margin-bottom:var(--line); color:var(--ink);
+  }
+
+  /* handwritten / photo pages */
+  .letter-photo{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:0 0 var(--line);
+    border-radius:4px;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+  }
+
+  .page-badge{
+    position:absolute; right:22px; bottom:16px;
+    width:30px; height:30px; border-radius:50%;
+    border:1.4px solid var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-label); font-size:13px; color:var(--ink-soft);
+    background:var(--paper);
+  }
+  .page-stamp{
+    position:absolute; left:16px; top:14px; font-size:20px; opacity:.9;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));
+  }
+
+  /* nav controls */
+  .nav-btn{
+    position:fixed; top:50%; transform:translateY(-50%);
+    width:46px; height:46px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:#fbf3e4;
+    font-size:20px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; z-index:32;
+    backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease, opacity .2s ease;
+  }
+  .nav-btn:hover{ background:rgba(255,255,255,.18); }
+  .nav-btn:disabled{ opacity:0; pointer-events:none; }
+  #prevBtn{ left:14px; }
+  #nextBtn{ right:14px; }
+
+  .close-btn{
+    position:fixed; top:20px; right:20px; z-index:33;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(255,255,255,.35);
+    color:#fbf3e4;
+    font-family:var(--font-label); font-size:12px; letter-spacing:.06em;
+    padding:9px 16px; border-radius:30px;
+    cursor:pointer; backdrop-filter:blur(6px);
+    display:flex; align-items:center; gap:6px;
+    transition:background .2s ease;
+  }
+  .close-btn:hover{ background:rgba(255,255,255,.18); }
+
+  .dots{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    display:flex; gap:9px; z-index:32;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,.3);
+    border:none; cursor:pointer; padding:0;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .dot.on{ background:var(--rose); transform:scale(1.3); }
+
+  /* finale */
+  .heart-burst{
+    position:fixed; z-index:40; pointer-events:none;
+    font-size:20px; color:var(--rose);
+    animation:pop 1.4s ease-out forwards;
+  }
+  @keyframes pop{
+    0%{ transform:translateY(0) scale(.6); opacity:0; }
+    15%{ opacity:1; }
+    100%{ transform:translateY(-140px) scale(1.1); opacity:0; }
+  }
+
+  @media (max-width:560px){
+    .paper-head{ padding-left:46px; }
+    .paper-body{ padding-left:46px; padding-right:22px; }
+    .paper::before{ left:36px; }
+    .page-stamp{ left:10px; }
+    .nav-btn{ width:40px; height:40px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.1s !important; }
+    .ambient{ display:none; }
+  }
+
+  /* ---------- MUSIC PLAYER ---------- */
+  .music-player{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:20;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:8px;
+    font-family:var(--font-label);
+    font-size:11px;
+    color:rgba(251,243,228,.6);
+  }
+  .music-toggle{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:#fbf3e4;
+    font-size:22px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+  }
+  .music-toggle:hover{
+    background:rgba(255,255,255,.18);
+    transform:scale(1.05);
+  }
+  .music-toggle.playing{
+    border-color:var(--rose);
+    background:rgba(232,160,172,.15);
+  }
+  .music-info{
+    white-space:nowrap;
+    padding:0 8px;
+    opacity:0;
+    transform:translateX(10px);
+    transition:opacity .2s ease, transform .2s ease;
+    pointer-events:none;
+  }
+  .music-player:hover .music-info{
+    opacity:1;
+    transform:translateX(0);
+  }
+  .music-controls{
+    display:flex; align-items:center; gap:6px;
+  }
+  .music-ctrl{
+    width:38px; height:38px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.07);
+    color:#fbf3e4; font-size:14px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .music-ctrl:hover{ background:rgba(255,255,255,.16); transform:scale(1.05); }
+  @media (max-width:560px){
+    .music-player{ bottom:16px; right:16px; }
+    .music-toggle{ width:48px; height:48px; font-size:18px; }
+    .music-ctrl{ width:34px; height:34px; font-size:12px; }
+  }
+
+  /* ---------- ADD LETTER (UPLOAD) ---------- */
+  .add-letter-btn{
+    margin-top:14px;
+    font-family:var(--font-label);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.5);
+    background:none;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:30px;
+    padding:8px 16px;
+    cursor:pointer;
+    backdrop-filter:blur(6px);
+    transition:color .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .add-letter-btn:hover{ color:#fbf3e4; border-color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); }
+
+  #uploadModal{
+    position:fixed; inset:0; z-index:60;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(20,12,24,.55);
+    backdrop-filter:blur(4px);
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  #uploadModal.active{ opacity:1; pointer-events:auto; }
+  .upload-card{
+    width:min(520px,94vw);
+    max-height:88vh;
+    overflow-y:auto;
+    background:linear-gradient(160deg, #2e2136, #3c2a44);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:18px;
+    padding:26px 24px 22px;
+    box-shadow:0 24px 60px rgba(0,0,0,.5);
+    font-family:var(--font-label);
+    color:#fbf3e4;
+  }
+  .upload-card h2{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:26px;
+    margin:0 0 4px;
+    color:#fbf3e4;
+  }
+  .upload-sub{
+    font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(251,243,228,.5); margin:0 0 18px;
+  }
+  .dropzone{
+    border:1.5px dashed rgba(255,255,255,.3);
+    border-radius:12px;
+    padding:26px 16px;
+    text-align:center;
+    font-size:12.5px;
+    color:rgba(251,243,228,.65);
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .dropzone.drag{ border-color:var(--rose); background:rgba(232,160,172,.08); }
+  .dropzone button{
+    background:none; border:none; color:var(--rose); cursor:pointer;
+    font-family:inherit; font-size:12.5px; text-decoration:underline;
+  }
+  .upload-pages{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;
+  }
+  .upload-page{
+    position:relative;
+    width:86px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1.5px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.06);
+  }
+  .upload-page img{
+    width:100%; height:64px; object-fit:cover; display:block;
+  }
+  .upload-page .pg-num{
+    position:absolute; top:4px; left:4px;
+    background:rgba(0,0,0,.55); color:#fff;
+    font-size:10px; padding:1px 6px; border-radius:8px;
+  }
+  .upload-page .pg-x{
+    position:absolute; top:2px; right:2px;
+    width:18px; height:18px; border-radius:50%;
+    border:none; background:rgba(0,0,0,.55); color:#fff;
+    font-size:10px; line-height:1; cursor:pointer;
+  }
+  .upload-page .pg-move{
+    display:flex; justify-content:center; gap:4px; padding:3px 0;
+  }
+  .upload-page .pg-move button{
+    background:none; border:none; color:rgba(251,243,228,.7);
+    font-size:11px; cursor:pointer; padding:0 4px;
+  }
+  .upload-page .pg-move button:hover{ color:#fff; }
+  .upload-page .pg-move button:disabled{ opacity:.25; cursor:default; }
+  .upload-fields{
+    display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;
+  }
+  .upload-fields label{
+    display:flex; flex-direction:column; gap:5px;
+    font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:rgba(251,243,228,.55);
+  }
+  .upload-fields select, .upload-fields input[type="date"]{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:8px;
+    color:#fbf3e4;
+    font-family:inherit; font-size:13px;
+    padding:7px 10px;
+  }
+  .upload-fields select option{ color:#3d2b2e; }
+  .upload-actions{
+    display:flex; justify-content:flex-end; gap:10px; margin-top:20px;
+  }
+  .upload-actions button{
+    font-family:var(--font-label); font-size:12px; letter-spacing:.06em;
+    padding:10px 18px; border-radius:30px; cursor:pointer;
+    border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.07); color:#fbf3e4;
+    transition:background .2s ease;
+  }
+  .upload-actions button:hover{ background:rgba(255,255,255,.16); }
+  .upload-actions .primary{
+    background:linear-gradient(135deg, var(--rose-deep), var(--magenta));
+    border:none;
+  }
+  .upload-actions .primary:hover{ filter:brightness(1.08); }
+  .upload-actions .primary:disabled{ opacity:.4; cursor:default; filter:none; }
+  .upload-hint{
+    margin:16px 0 0; font-size:11px; line-height:1.6;
+    color:rgba(251,243,228,.45);
+  }
+  .upload-status{
+    margin:14px 0 0; font-size:12px; line-height:1.5;
+    color:var(--rose); min-height:18px;
+  }
+  .upload-status.error{ color:#ffb3c9; }
+
+  /* ---------- LOCK SCREEN ---------- */
+  #lock{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:
+      radial-gradient(ellipse 70% 45% at 25% 0%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,190,200,.08), transparent 60%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+  }
+  .lock-card{
+    width:min(360px,92vw);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:18px;
+    padding:36px 28px 30px;
+    text-align:center;
+    backdrop-filter:blur(8px);
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+  .lock-emoji{ font-size:34px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
+  .lock-title{
+    font-family:var(--font-script);
+    font-size:30px; color:#fbf3e4; margin:14px 0 4px;
+  }
+  .lock-sub{
+    font-family:var(--font-label); font-size:12px; letter-spacing:.08em;
+    color:rgba(251,243,228,.6); margin:0 0 22px; text-transform:uppercase;
+  }
+  .lock-input{
+    width:100%;
+    padding:13px 16px;
+    font-size:18px; text-align:center; letter-spacing:.3em;
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:#fbf3e4;
+    border:2px solid transparent;
+    border-radius:10px;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .lock-input:focus{ border-color:var(--rose); box-shadow:0 0 0 4px rgba(232,160,172,.25); }
+  .lock-btn{
+    width:100%;
+    margin-top:14px;
+    padding:12px;
+    border:none; cursor:pointer;
+    font-family:var(--font-label); font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(135deg, var(--rose-deep), var(--magenta));
+    border-radius:30px;
+    transition:filter .2s ease, transform .1s ease;
+  }
+  .lock-btn:hover{ filter:brightness(1.08); }
+  .lock-btn:active{ transform:scale(.98); }
+  .lock-err{
+    margin:12px 0 0; min-height:18px; font-size:12.5px;
+    font-family:var(--font-label); color:#ffb3c9;
+  }
+  .lock-hint{
+    margin:18px 0 0; font-size:11px; font-family:var(--font-label);
+    color:rgba(251,243,228,.38); line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div id="lock" role="dialog" aria-modal="true" aria-label="Enter the passcode">
+  <div class="lock-card">
+    <div class="lock-emoji">💌</div>
+    <h1 class="lock-title">Just for you,<br>Jennerino</h1>
+    <p class="lock-sub">enter our little passcode ♡</p>
+    <input class="lock-input" id="lockInput" type="password" autocomplete="off" maxlength="20" placeholder="••••••">
+    <button class="lock-btn" id="lockBtn">open the letter</button>
+    <p class="lock-err" id="lockErr"></p>
+    <p class="lock-hint">psst — a little surprise from Dannerino.<br>It's sealed until the right words come in :)</p>
+  </div>
+</div>
+
+<div class="ambient" id="ambient"></div>
+
+<main id="hub">
+  <h1 class="title">Our Love Letters</h1>
+  <p class="subtitle"><span id="subtitleDays">206</span> days, <span id="subtitlePages">6</span> pages, and counting</p>
+
+  <div class="day-pill">
+    <span class="num" id="dayNum">206</span>
+    <span class="lbl">days together</span>
+  </div>
+
+  <div class="jars">
+    <div class="jar-col">
+      <h2 class="jar-label">Dannerino's Jar</h2>
+      <div class="jar-wrap">
+        <div class="jar-lid"></div>
+        <div class="jar-neck"></div>
+        <div class="jar-body">
+          <div class="envelopes" id="envelopesDan"></div>
+        </div>
+      </div>
+      <p class="jar-caption" id="jarCaptionDan">6 letters, from Jennerino ♡</p>
+    </div>
+
+    <div class="jar-col">
+      <h2 class="jar-label">Jennerino's Jar</h2>
+      <div class="jar-wrap jar-empty" id="jenWrapJen">
+        <div class="jar-lid"></div>
+        <div class="jar-neck"></div>
+        <div class="jar-body">
+          <div class="envelopes" id="envelopesJen"></div>
+          <div class="ghost-env" id="ghostJen">your turn,<br>Dannerino</div>
+        </div>
+      </div>
+      <p class="jar-caption" id="jarCaptionJen">waiting for day 300 ♡</p>
+    </div>
+  </div>
+
+  <p class="hub-hint">tap a letter to unfold it ♡</p>
+  <p class="signoff">kept safe, always — Dannerino</p>
+
+  <button class="add-letter-btn" id="addLetterBtn" type="button">✎ add a letter</button>
+
+  <div class="music-player" id="musicPlayer">
+    <div class="music-controls">
+      <button class="music-ctrl" id="musicPrev" aria-label="Previous song">⏮</button>
+      <button class="music-toggle" id="musicToggle" aria-label="Play music">♪</button>
+      <button class="music-ctrl" id="musicNext" aria-label="Next song">⏭</button>
+    </div>
+    <audio id="bgMusic" preload="metadata"></audio>
+    <div class="music-info" id="musicInfo">Paper Rings — Taylor Swift</div>
+  </div>
+</main>
+
+<div id="uploadModal" aria-hidden="true">
+  <div class="upload-card">
+    <h2>a new letter</h2>
+    <p class="upload-sub">for the jar ♡</p>
+    <div class="dropzone" id="dropzone">
+      drop photos here, or <button type="button" id="pickBtn">choose files</button>
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    </div>
+    <div class="upload-pages" id="uploadPages"></div>
+    <div class="upload-fields">
+      <label>who wrote it
+        <select id="uploadAuthor">
+          <option value="jennerino">Jennerino</option>
+          <option value="dannerino">Dannerino</option>
+        </select>
+      </label>
+      <label>date
+        <input type="date" id="uploadDate">
+      </label>
+      <label>emoji
+        <select id="uploadEmoji">
+          <option>🧁</option><option>🌻</option><option>🐻</option>
+          <option>💌</option><option>💕</option><option>♑</option>
+          <option>🌸</option><option>🌙</option><option>✨</option>
+        </select>
+      </label>
+    </div>
+    <div class="upload-actions">
+      <button type="button" id="uploadCancel">cancel</button>
+      <button type="button" class="primary" id="uploadPackage" disabled>send to jar ♡</button>
+    </div>
+    <p class="upload-status" id="uploadStatus"></p>
+    <p class="upload-hint">the letter is sent straight to the jar's inbox. once it's transcribed, a new envelope will appear here ♡</p>
+  </div>
+</div>
+
+<section id="reader" aria-hidden="true">
+  <button class="close-btn" id="closeBtn">✕ back to the jar</button>
+  <button class="nav-btn" id="prevBtn" aria-label="Previous page">‹</button>
+  <button class="nav-btn" id="nextBtn" aria-label="Next page">›</button>
+  <div class="dots" id="dots"></div>
+  <article class="paper" id="paper">
+    <div class="paper-head">
+      <span>No. <i id="pageNoField">1</i></span>
+      <span>Date <i>12 August</i></span>
+    </div>
+    <div class="page-stamp" id="pageStamp">🧁</div>
+    <div class="paper-body" id="paperBody"></div>
+    <div class="page-badge" id="pageBadge">1</div>
+  </article>
+</section>
+
+<script>
+(function(){
+
+  // ================= CRYPTO / LOCK SCREEN =================
+  // Letters live in data/letters.json ENCRYPTED with AES-256-GCM. The key is
+  // derived from a passphrase the visitor types here (PBKDF2-SHA256, 600,000
+  // iterations). The passphrase is NEVER stored or compared in code -- a
+  // successful decryption is the only proof it was correct, so a wrong entry
+  // simply leaves everything sealed.
+  // IMPORTANT: SALT + ITER must match tools/encrypt-letter.js exactly.
+  var PASSPHRASE_SALT = new TextEncoder().encode('our-love-letters-v1');
+  var PASSPHRASE_ITER = 600000;
+
+  var lockEl  = document.getElementById("lock");
+  var lockIn  = document.getElementById("lockInput");
+  var lockBtn = document.getElementById("lockBtn");
+  var lockErr = document.getElementById("lockErr");
+
+  function b64toBytes(b64){
+    var raw = atob(b64);
+    var arr = new Uint8Array(raw.length);
+    for(var i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
+    return arr;
+  }
+
+  function deriveKey(pass){
+    return crypto.subtle.importKey('raw', new TextEncoder().encode(pass), {name:'PBKDF2'}, false, ['deriveKey'])
+      .then(function(k){
+        return crypto.subtle.deriveKey(
+          {name:'PBKDF2', salt:PASSPHRASE_SALT, iterations:PASSPHRASE_ITER, hash:'SHA-256'},
+          k, {name:'AES-GCM', length:256}, false, ['decrypt']);
+      });
+  }
+
+  function decryptLetters(blobText, pass){
+    var env = JSON.parse(blobText);
+    var iv  = b64toBytes(env.iv);
+    var ct  = b64toBytes(env.ct);
+    return deriveKey(pass).then(function(key){
+      return crypto.subtle.decrypt({name:'AES-GCM', iv:iv}, key, ct);
+    }).then(function(pt){ return new TextDecoder().decode(pt); });
+  }
+
+  function setCaptions(){
+    var fromJen = pages.filter(function(p){ return p.author !== "dannerino"; }).length;
+    var fromDan = pages.filter(function(p){ return p.author === "dannerino"; }).length;
+    var capDan = document.getElementById("jarCaptionDan");
+    var capJen = document.getElementById("jarCaptionJen");
+    if(capDan) capDan.textContent = fromJen + " letter" + (fromJen === 1 ? "" : "s") + ", from Jennerino \u2661";
+    if(capJen) capJen.textContent = fromDan > 0 ? (fromDan + " letter" + (fromDan === 1 ? "" : "s") + ", from Dannerino \u2661") : "waiting for day 300 \u2661";
+    var ghostJen = document.getElementById("ghostJen");
+    var jenWrap  = document.getElementById("jenWrapJen");
+    if(fromDan > 0){
+      if(ghostJen) ghostJen.style.display = "none";
+      if(jenWrap) jenWrap.classList.remove("jar-empty");
+    }
+  }
+
+  function finishUnlock(){
+    lockEl.style.display = "none";
+    buildEnvelopes();
+    buildDots();
+    updateDayCount();
+    setCaptions();
+    if(window.startMusic) window.startMusic();
+  }
+
+  function tryPass(){
+    var val = lockIn.value;
+    if(!val){ lockErr.textContent = "enter the words, then open \u2661"; return; }
+    lockErr.textContent = "";
+    lockBtn.disabled = true;
+    lockBtn.textContent = "unlocking \u2661";
+    return fetch("data/letters.json")
+      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(function(blob){ return decryptLetters(blob, val); })
+      .then(function(text){
+        var data = JSON.parse(text);
+        pages = (data && data.letters) || [];
+        finishUnlock();
+      })
+      .catch(function(){
+        // wrong passphrase -> AES-GCM auth tag fails -> still sealed.
+        lockErr.textContent = "hmm, not quite \u2014 try again? \u2661";
+        lockIn.value = "";
+        lockIn.focus();
+        lockBtn.disabled = false;
+        lockBtn.textContent = "open the letter";
+      });
+  }
+
+  lockBtn.addEventListener("click", tryPass);
+  lockIn.addEventListener("keydown", function(e){ if(e.key === "Enter") tryPass(); });
+  lockIn.focus();
+  // ================= END LOCK =================
+
+  // Letters are decrypted on unlock (see tryPass / finishUnlock above) into
+  // the `pages` array; nothing is fetched or rendered until the right words.
+
+
+  var pages = [];
+
+  var opened = new Set();
+  var current = 0;
+  var readerOpenedOnce = false;
+
+  var envWrapDan = document.getElementById("envelopesDan");
+  var envWrapJen = document.getElementById("envelopesJen");
+  var envEls = [];
+  var hub       = document.getElementById("hub");
+  var reader    = document.getElementById("reader");
+  var paperBody = document.getElementById("paperBody");
+  var paperEl   = document.getElementById("paper");
+  var pageBadge = document.getElementById("pageBadge");
+  var pageStamp = document.getElementById("pageStamp");
+  var pageNoFld = document.getElementById("pageNoField");
+  var dotsWrap  = document.getElementById("dots");
+  var prevBtn   = document.getElementById("prevBtn");
+  var nextBtn   = document.getElementById("nextBtn");
+  var closeBtn  = document.getElementById("closeBtn");
+  var dayNumEl  = document.getElementById("dayNum");
+
+  // live day counter — Day 1 was 25 January 2026, the day we got together.
+  // Counts itself up automatically after that.
+  var day1Anchor = new Date(2026, 0, 25); // month is 0-indexed: 0 = January — day 1 of the relationship
+  function updateDayCount(){
+    var now = new Date();
+    var a = new Date(day1Anchor.getFullYear(), day1Anchor.getMonth(), day1Anchor.getDate());
+    var b = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var diff = Math.round((b - a) / 86400000);
+    var count = 1 + diff;
+    if(dayNumEl) dayNumEl.textContent = count;
+    var subEl = document.getElementById("subtitleDays");
+    if(subEl) subEl.textContent = count;
+    var pageEl = document.getElementById("subtitlePages");
+    if(pageEl) pageEl.textContent = pages.length;
+  }
+  updateDayCount();
+  setInterval(updateDayCount, 60 * 60 * 1000);
+
+  function buildEnvelopes(){
+    var sealCountDan = 0;
+    var sealCountJen = 0;
+    pages.forEach(function(pg, i){
+      var b = document.createElement("button");
+      b.className = "env";
+      b.setAttribute("aria-label", "Open letter page " + (i+1) + " of " + pages.length);
+      var inJen = (pg.author === "dannerino");
+      var sealNo = inJen ? (++sealCountJen) : (++sealCountDan);
+      b.innerHTML =
+        '<span class="env-flap"></span>' +
+        '<span class="env-seal">' + sealNo + '</span>' +
+        '<span class="env-emoji">' + pg.emoji + '</span>';
+      b.addEventListener("click", function(){ openReader(i); });
+      // letters written by Jennerino go into Dannerino's jar, and vice versa
+      var wrap = inJen ? envWrapJen : envWrapDan;
+      wrap.appendChild(b);
+      envEls[i] = b;
+    });
+  }
+
+  function buildDots(){
+    pages.forEach(function(_, i){
+      var d = document.createElement("button");
+      d.className = "dot";
+      d.setAttribute("aria-label", "Go to page " + (i+1));
+      d.addEventListener("click", function(){ render(i); });
+      dotsWrap.appendChild(d);
+    });
+  }
+
+  function renderPaper(i){
+    var pg = pages[i];
+    paperBody.innerHTML = "";
+    pg.blocks.forEach(function(block){
+      if(block.t === "p"){
+        var p = document.createElement("p");
+        if(block.class) p.className = block.class;
+        p.innerHTML = block.c;
+        paperBody.appendChild(p);
+      } else if(block.t === "h"){
+        var h = document.createElement("div");
+        h.className = "heading heading--" + block.k;
+        h.innerHTML = block.c;
+        paperBody.appendChild(h);
+      } else if(block.t === "ol"){
+        var ol = document.createElement("ol");
+        ol.className = "letter-questions";
+        block.items.forEach(function(it){
+          var li = document.createElement("li");
+          li.innerHTML = it;
+          ol.appendChild(li);
+        });
+        paperBody.appendChild(ol);
+      } else if(block.t === "img"){
+        var img = document.createElement("img");
+        img.className = "letter-photo";
+        img.src = block.src;
+        img.alt = block.alt || ("letter page " + (i + 1));
+        img.loading = "lazy";
+        paperBody.appendChild(img);
+      }
+    });
+    if(pg.continues){
+      var c = document.createElement("p");
+      c.className = "continues";
+      c.textContent = "flip for more →";
+      paperBody.appendChild(c);
+    }
+    paperBody.scrollTop = 0;
+    pageBadge.textContent = (i+1);
+    pageStamp.textContent = pg.emoji;
+    pageNoFld.textContent = (i+1) + " of " + pages.length;
+    paperEl.setAttribute("data-parity", i % 2 === 0 ? "odd" : "even");
+
+    prevBtn.disabled = (i === 0);
+    nextBtn.disabled = (i === pages.length - 1);
+
+    Array.prototype.forEach.call(dotsWrap.children, function(d, idx){
+      d.classList.toggle("on", idx === i);
+    });
+  }
+
+  function markOpened(i){
+    if(opened.has(i)) return;
+    opened.add(i);
+    if(envEls[i]) envEls[i].classList.add("env-done");
+    if(opened.size === pages.length){
+      burstHearts();
+    }
+  }
+
+  function render(i){
+    current = i;
+    renderPaper(i);
+    markOpened(i);
+  }
+
+  function openReader(i){
+    render(i);
+    reader.classList.add("active");
+    reader.setAttribute("aria-hidden", "false");
+    hub.classList.add("dimmed");
+  }
+
+  function closeReader(){
+    reader.classList.remove("active");
+    reader.setAttribute("aria-hidden", "true");
+    hub.classList.remove("dimmed");
+  }
+
+  closeBtn.addEventListener("click", closeReader);
+  prevBtn.addEventListener("click", function(){ if(current > 0) render(current - 1); });
+  nextBtn.addEventListener("click", function(){ if(current < pages.length - 1) render(current + 1); });
+
+  document.addEventListener("keydown", function(e){
+    if(!reader.classList.contains("active")) return;
+    if(e.key === "ArrowRight" && current < pages.length - 1) render(current + 1);
+    if(e.key === "ArrowLeft" && current > 0) render(current - 1);
+    if(e.key === "Escape") closeReader();
+  });
+
+  function burstHearts(){
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for(var n = 0; n < 18; n++){
+      (function(){
+        var h = document.createElement("div");
+        h.className = "heart-burst";
+        h.textContent = "♥";
+        h.style.left = (10 + Math.random() * 80) + "vw";
+        h.style.bottom = "6vh";
+        h.style.animationDelay = (Math.random() * .6) + "s";
+        h.style.fontSize = (14 + Math.random() * 16) + "px";
+        document.body.appendChild(h);
+        setTimeout(function(){ h.remove(); }, 2200);
+      })();
+    }
+  }
+
+  // ambient floating hearts
+  (function(){
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var wrap = document.getElementById("ambient");
+    var glyphs = ["♡","✦","♥"];
+    for(var i = 0; i < 10; i++){
+      var s = document.createElement("span");
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = (Math.random() * 100) + "vw";
+      s.style.animationDuration = (16 + Math.random() * 14) + "s";
+      s.style.animationDelay = (Math.random() * -20) + "s";
+      s.style.fontSize = (10 + Math.random() * 14) + "px";
+      wrap.appendChild(s);
+    }
+  })();
+
+  // music player
+  (function(){
+    var audio = document.getElementById("bgMusic");
+    var toggle = document.getElementById("musicToggle");
+    var prevBtn = document.getElementById("musicPrev");
+    var nextBtn = document.getElementById("musicNext");
+    var infoEl  = document.getElementById("musicInfo");
+    if(!audio || !toggle || !prevBtn || !nextBtn) return;
+
+    // 🎵 EDIT THIS PLAYLIST — src is the path inside the repo,
+    // name is what's shown in the player. First entry is the default.
+    var playlist = [
+      { src:"Paper_Rings.mp3",           name:"Paper Rings — Taylor Swift" },
+      { src:"My_Love_Mine_All_Mine.mp3", name:"My Love Mine All Mine — Mitski" }
+    ];
+
+    var cur = 0;
+    var autoStarted = false;
+
+    function setPlayingUI(on){
+      toggle.classList.toggle("playing", on);
+      toggle.textContent = on ? "❚❚" : "♪";
+    }
+
+    function loadTrack(i){
+      cur = (i + playlist.length) % playlist.length;
+      var tr = playlist[cur];
+      audio.src = tr.src;
+      audio.load();
+      if(infoEl) infoEl.textContent = tr.name;
+    }
+
+    function play(){
+      setPlayingUI(true);
+      var p = audio.play();
+      if(p && p.catch) p.catch(function(){ /* autoplay blocked */ });
+    }
+
+    function skip(next){
+      var wasPlaying = !audio.paused;
+      loadTrack(next ? cur + 1 : cur - 1);
+      if(wasPlaying) play();
+    }
+
+    // Attempts to start the music. Returns without doing anything if
+    // it has already been started (so it never fights the user's pause).
+    window.startMusic = function(){
+      if(autoStarted) return;
+      autoStarted = true;
+      if(!audio.getAttribute("src")) loadTrack(0);
+      play();
+    };
+
+    // The lock screen must always be unlocked to reach the hub, and
+    // finishUnlock() calls startMusic() there -- no auto-start needed.
+
+    toggle.addEventListener("click", function(){
+      if(audio.paused){
+        autoStarted = true;
+        play();
+      } else {
+        audio.pause();
+        setPlayingUI(false);
+      }
+    });
+
+    prevBtn.addEventListener("click", function(){ skip(false); });
+    nextBtn.addEventListener("click", function(){ skip(true); });
+
+    // auto-advance to the next song when the current one ends
+    audio.addEventListener("ended", function(){
+      skip(true);
+    });
+
+    // set the default track (Paper Rings)
+    loadTrack(0);
+  })();
+
+  // ================= ADD LETTER (UPLOAD) =================
+  (function(){
+    var modal     = document.getElementById("uploadModal");
+    var openBtn   = document.getElementById("addLetterBtn");
+    var cancelBtn = document.getElementById("uploadCancel");
+    var dropzone  = document.getElementById("dropzone");
+    var pickBtn   = document.getElementById("pickBtn");
+    var fileIn    = document.getElementById("fileInput");
+    var pagesWrap = document.getElementById("uploadPages");
+    var authorEl  = document.getElementById("uploadAuthor");
+    var dateEl    = document.getElementById("uploadDate");
+    var emojiEl   = document.getElementById("uploadEmoji");
+    var pkgBtn    = document.getElementById("uploadPackage");
+    var statusEl  = document.getElementById("uploadStatus");
+    if(!modal || !openBtn) return;
+
+    var files = []; // {file, url}
+
+    function todayStr(){
+      var d = new Date();
+      var m = ("0" + (d.getMonth()+1)).slice(-2);
+      var day = ("0" + d.getDate()).slice(-2);
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+
+    function openModal(){
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+      if(!dateEl.value) dateEl.value = todayStr();
+      if(statusEl) statusEl.textContent = "";
+    }
+    function closeModal(){
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    openBtn.addEventListener("click", openModal);
+    cancelBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", function(e){ if(e.target === modal) closeModal(); });
+
+    function addFiles(list){
+      Array.prototype.forEach.call(list, function(f){
+        if(!/^image\/(png|jpe?g|webp)$/i.test(f.type)) return;
+        files.push({ file:f, url:URL.createObjectURL(f) });
+      });
+      renderPages();
+    }
+
+    fileIn.addEventListener("change", function(){ addFiles(fileIn.files); fileIn.value = ""; });
+    pickBtn.addEventListener("click", function(e){ e.stopPropagation(); fileIn.click(); });
+    dropzone.addEventListener("click", function(){ fileIn.click(); });
+    ["dragover","dragenter"].forEach(function(ev){
+      dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.add("drag"); });
+    });
+    ["dragleave","drop"].forEach(function(ev){
+      dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.remove("drag"); });
+    });
+    dropzone.addEventListener("drop", function(e){
+      if(e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+    });
+
+    function renderPages(){
+      pagesWrap.innerHTML = "";
+      files.forEach(function(item, i){
+        var el = document.createElement("div");
+        el.className = "upload-page";
+        el.innerHTML =
+          '<img src="' + item.url + '" alt="page ' + (i+1) + '">' +
+          '<span class="pg-num">' + (i+1) + '</span>' +
+          '<button class="pg-x" type="button" aria-label="remove">✕</button>' +
+          '<div class="pg-move">' +
+            '<button type="button" ' + (i===0 ? 'disabled' : '') + ' data-move="-1">‹</button>' +
+            '<button type="button" ' + (i===files.length-1 ? 'disabled' : '') + ' data-move="1">›</button>' +
+          '</div>';
+        el.querySelector(".pg-x").addEventListener("click", function(){
+          URL.revokeObjectURL(item.url);
+          files.splice(i, 1);
+          renderPages();
+        });
+        el.querySelectorAll(".pg-move button").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var dir = parseInt(btn.getAttribute("data-move"), 10);
+            var j = i + dir;
+            if(j < 0 || j >= files.length) return;
+            var tmp = files[i]; files[i] = files[j]; files[j] = tmp;
+            renderPages();
+          });
+        });
+        pagesWrap.appendChild(el);
+      });
+      pkgBtn.disabled = files.length === 0;
+    }
+
+    // The Cloudflare Worker that relays uploads into the GitHub repo.
+    // This URL is public (not a secret) — the GitHub token lives inside the Worker.
+    var WORKER_URL = "https://ourloveletters.weidan-hng.workers.dev";
+
+    function setStatus(msg, isError){
+      if(!statusEl) return;
+      statusEl.textContent = msg || "";
+      statusEl.classList.toggle("error", !!isError);
+    }
+
+    // Downscale + base64-encode an image so uploads stay small and fast.
+    function fileToBase64(file, maxDim){
+      return new Promise(function(resolve, reject){
+        var img = new Image();
+        var url = URL.createObjectURL(file);
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          var scale = Math.min(1, maxDim / Math.max(w, h));
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL("image/jpeg", 0.82).split(",")[1]);
+        };
+        img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("could not read image")); };
+        img.src = url;
+      });
+    }
+
+    function letterId(){
+      var d = new Date();
+      function p(n){ return ("0"+n).slice(-2); }
+      return "letter-" + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+    }
+
+    pkgBtn.addEventListener("click", function(){
+      if(!files.length) return;
+      pkgBtn.disabled = true;
+      setStatus("sending…");
+
+      var id = letterId();
+      var manifest = {
+        author: authorEl.value,
+        date: dateEl.value || todayStr(),
+        emoji: emojiEl.value,
+        pages: files.map(function(item, i){
+          var ext = (item.file.name.match(/\.(\w+)$/) || [,"jpg"])[1].toLowerCase();
+          return { file: "page-" + (i+1) + "." + ext, name: item.file.name };
+        })
+      };
+
+      Promise.all(files.map(function(item, i){
+        return fileToBase64(item.file, 1600).then(function(b64){
+          var ext = (item.file.name.match(/\.(\w+)$/) || [,"jpg"])[1].toLowerCase();
+          return { name: "page-" + (i+1) + "." + ext, base64: b64 };
+        });
+      })).then(function(pages){
+        return fetch(WORKER_URL + "/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ letterId: id, pages: pages, manifest: manifest })
+        });
+      }).then(function(res){
+        return res.json().then(function(data){ return { ok: res.ok, data: data }; });
+      }).then(function(result){
+        if(result.ok && result.data.ok){
+          setStatus("sent! ♡ it'll be transcribed into the jar soon");
+          files = [];
+          renderPages();
+          setTimeout(closeModal, 1600);
+        } else {
+          var detail = result.data.error;
+          if(!detail && result.data.results){
+            var bad = result.data.results.filter(function(r){ return r.status < 200 || r.status >= 300; });
+            detail = "GitHub said " + bad.map(function(r){ return r.status + (r.detail ? " (" + r.detail + ")" : ""); }).join(", ");
+          }
+          setStatus("hmm, that didn't go through — try again? (" + (detail || "unknown error") + ")", true);
+          pkgBtn.disabled = false;
+        }
+      }).catch(function(err){
+        setStatus("couldn't reach the jar — check your connection and try again", true);
+        pkgBtn.disabled = false;
+      });
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
