@@ -458,6 +458,62 @@
     .ambient{ display:none; }
   }
 
+  /* ---------- MUSIC PLAYER ---------- */
+  .music-player{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:20;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:8px;
+    font-family:var(--font-label);
+    font-size:11px;
+    color:rgba(251,243,228,.6);
+  }
+  .music-toggle{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:#fbf3e4;
+    font-size:22px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease, border-color .2s ease;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+  }
+  .music-toggle:hover{
+    background:rgba(255,255,255,.18);
+    transform:scale(1.05);
+  }
+  .music-toggle.playing{
+    border-color:var(--rose);
+    background:rgba(232,160,172,.15);
+  }
+  .music-info{
+    white-space:nowrap;
+    padding:0 8px;
+    opacity:0;
+    transform:translateX(10px);
+    transition:opacity .2s ease, transform .2s ease;
+    pointer-events:none;
+  }
+  .music-player:hover .music-info{
+    opacity:1;
+    transform:translateX(0);
+  }
+  @media (max-width:560px){
+    .music-player{ bottom:16px; right:16px; }
+    .music-toggle{ width:48px; height:48px; font-size:18px; }
+  }
+
   /* ---------- LOCK SCREEN ---------- */
   #lock{
     position:fixed; inset:0; z-index:100;
@@ -577,6 +633,12 @@
 
   <p class="hub-hint">tap a letter to unfold it ♡</p>
   <p class="signoff">kept safe, always — Dannerino</p>
+
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" aria-label="Play music">♪</button>
+    <audio id="bgMusic" src="08%20Paper%20Rings%20%5B320%5D.mp3" loop preload="metadata"></audio>
+    <div class="music-info">Paper Rings — Taylor Swift</div>
+  </div>
 </main>
 
 <section id="reader" aria-hidden="true">
@@ -876,8 +938,33 @@
     }
   })();
 
+  // music player
+  (function(){
+    var audio = document.getElementById("bgMusic");
+    var toggle = document.getElementById("musicToggle");
+    if(!audio || !toggle) return;
+
+    toggle.addEventListener("click", function(){
+      if(audio.paused){
+        audio.play().catch(function(){ /* autoplay blocked */ });
+        toggle.classList.add("playing");
+        toggle.textContent = "❚❚";
+      } else {
+        audio.pause();
+        toggle.classList.remove("playing");
+        toggle.textContent = "♪";
+      }
+    });
+
+    audio.addEventListener("ended", function(){
+      toggle.classList.remove("playing");
+      toggle.textContent = "♪";
+    });
+  })();
+
 })();
 </script>
 </body>
 </html>
+
 
