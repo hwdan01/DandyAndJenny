@@ -675,6 +675,7 @@
   function unlockSite(){
     lockEl.style.display = "none";
     try{ localStorage.setItem(STORE_KEY, "1"); }catch(e){}
+    if(window.startMusic) window.startMusic();
   }
 
   function tryPass(){
@@ -944,21 +945,52 @@
     var toggle = document.getElementById("musicToggle");
     if(!audio || !toggle) return;
 
+    var autoStarted = false;
+
+    function setPlayingUI(on){
+      toggle.classList.toggle("playing", on);
+      toggle.textContent = on ? "❚❚" : "♪";
+    }
+
+    // Attempts to start the music. Returns without doing anything if
+    // it has already been started (so it never fights the user's pause).
+    window.startMusic = function(){
+      if(autoStarted) return;
+      autoStarted = true;
+      setPlayingUI(true);
+      var p = audio.play();
+      if(p && p.catch) p.catch(function(){
+        // Autoplay blocked (no user gesture) — reset so the next
+        // interaction can try again.
+        autoStarted = false;
+        setPlayingUI(false);
+      });
+    };
+
+    // Returning visitor: the lock screen is skipped, so there's no
+    // passcode click to hook onto. Start the music on her first
+    // interaction with the page instead (tap, click, key, scroll).
+    if(preUnlocked){
+      ["pointerdown","keydown","wheel","touchstart"].forEach(function(evt){
+        document.addEventListener(evt, function(){
+          startMusic();
+        }, { once:true, passive:true });
+      });
+    }
+
     toggle.addEventListener("click", function(){
       if(audio.paused){
-        audio.play().catch(function(){ /* autoplay blocked */ });
-        toggle.classList.add("playing");
-        toggle.textContent = "❚❚";
+        autoStarted = true;
+        audio.play().catch(function(){});
+        setPlayingUI(true);
       } else {
         audio.pause();
-        toggle.classList.remove("playing");
-        toggle.textContent = "♪";
+        setPlayingUI(false);
       }
     });
 
     audio.addEventListener("ended", function(){
-      toggle.classList.remove("playing");
-      toggle.textContent = "♪";
+      setPlayingUI(false);
     });
   })();
 
@@ -966,5 +998,3 @@
 </script>
 </body>
 </html>
-
-
