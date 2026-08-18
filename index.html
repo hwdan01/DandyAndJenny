@@ -509,9 +509,23 @@
     opacity:1;
     transform:translateX(0);
   }
+  .music-controls{
+    display:flex; align-items:center; gap:6px;
+  }
+  .music-ctrl{
+    width:38px; height:38px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.07);
+    color:#fbf3e4; font-size:14px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .music-ctrl:hover{ background:rgba(255,255,255,.16); transform:scale(1.05); }
   @media (max-width:560px){
     .music-player{ bottom:16px; right:16px; }
     .music-toggle{ width:48px; height:48px; font-size:18px; }
+    .music-ctrl{ width:34px; height:34px; font-size:12px; }
   }
 
   /* ---------- LOCK SCREEN ---------- */
@@ -635,9 +649,13 @@
   <p class="signoff">kept safe, always — Dannerino</p>
 
   <div class="music-player" id="musicPlayer">
-    <button class="music-toggle" id="musicToggle" aria-label="Play music">♪</button>
-    <audio id="bgMusic" src="08%20Paper%20Rings%20%5B320%5D.mp3" loop preload="metadata"></audio>
-    <div class="music-info">Paper Rings — Taylor Swift</div>
+    <div class="music-controls">
+      <button class="music-ctrl" id="musicPrev" aria-label="Previous song">⏮</button>
+      <button class="music-toggle" id="musicToggle" aria-label="Play music">♪</button>
+      <button class="music-ctrl" id="musicNext" aria-label="Next song">⏭</button>
+    </div>
+    <audio id="bgMusic" preload="metadata"></audio>
+    <div class="music-info" id="musicInfo">Paper Rings — Taylor Swift</div>
   </div>
 </main>
 
@@ -943,8 +961,19 @@
   (function(){
     var audio = document.getElementById("bgMusic");
     var toggle = document.getElementById("musicToggle");
-    if(!audio || !toggle) return;
+    var prevBtn = document.getElementById("musicPrev");
+    var nextBtn = document.getElementById("musicNext");
+    var infoEl  = document.getElementById("musicInfo");
+    if(!audio || !toggle || !prevBtn || !nextBtn) return;
 
+    // 🎵 EDIT THIS PLAYLIST — src is the path inside the repo,
+    // name is what's shown in the player. First entry is the default.
+    var playlist = [
+      { src:"music/Paper_Rings.mp3",           name:"Paper Rings — Taylor Swift" },
+      { src:"music/My_Love_Mine_All_Mine.mp3", name:"My Love Mine All Mine — Mitski" }
+    ];
+
+    var cur = 0;
     var autoStarted = false;
 
     function setPlayingUI(on){
@@ -952,19 +981,33 @@
       toggle.textContent = on ? "❚❚" : "♪";
     }
 
+    function loadTrack(i){
+      cur = (i + playlist.length) % playlist.length;
+      var tr = playlist[cur];
+      audio.src = tr.src;
+      audio.load();
+      if(infoEl) infoEl.textContent = tr.name;
+    }
+
+    function play(){
+      setPlayingUI(true);
+      var p = audio.play();
+      if(p && p.catch) p.catch(function(){ /* autoplay blocked */ });
+    }
+
+    function skip(next){
+      var wasPlaying = !audio.paused;
+      loadTrack(next ? cur + 1 : cur - 1);
+      if(wasPlaying) play();
+    }
+
     // Attempts to start the music. Returns without doing anything if
     // it has already been started (so it never fights the user's pause).
     window.startMusic = function(){
       if(autoStarted) return;
       autoStarted = true;
-      setPlayingUI(true);
-      var p = audio.play();
-      if(p && p.catch) p.catch(function(){
-        // Autoplay blocked (no user gesture) — reset so the next
-        // interaction can try again.
-        autoStarted = false;
-        setPlayingUI(false);
-      });
+      if(!audio.getAttribute("src")) loadTrack(0);
+      play();
     };
 
     // Returning visitor: the lock screen is skipped, so there's no
@@ -981,17 +1024,23 @@
     toggle.addEventListener("click", function(){
       if(audio.paused){
         autoStarted = true;
-        audio.play().catch(function(){});
-        setPlayingUI(true);
+        play();
       } else {
         audio.pause();
         setPlayingUI(false);
       }
     });
 
+    prevBtn.addEventListener("click", function(){ skip(false); });
+    nextBtn.addEventListener("click", function(){ skip(true); });
+
+    // auto-advance to the next song when the current one ends
     audio.addEventListener("ended", function(){
-      setPlayingUI(false);
+      skip(true);
     });
+
+    // set the default track (Paper Rings)
+    loadTrack(0);
   })();
 
 })();
