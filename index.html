@@ -457,9 +457,85 @@
     *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.1s !important; }
     .ambient{ display:none; }
   }
+
+  /* ---------- LOCK SCREEN ---------- */
+  #lock{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:
+      radial-gradient(ellipse 70% 45% at 25% 0%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,190,200,.08), transparent 60%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+  }
+  .lock-card{
+    width:min(360px,92vw);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:18px;
+    padding:36px 28px 30px;
+    text-align:center;
+    backdrop-filter:blur(8px);
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+  .lock-emoji{ font-size:34px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
+  .lock-title{
+    font-family:var(--font-script);
+    font-size:30px; color:#fbf3e4; margin:14px 0 4px;
+  }
+  .lock-sub{
+    font-family:var(--font-label); font-size:12px; letter-spacing:.08em;
+    color:rgba(251,243,228,.6); margin:0 0 22px; text-transform:uppercase;
+  }
+  .lock-input{
+    width:100%;
+    padding:13px 16px;
+    font-size:18px; text-align:center; letter-spacing:.3em;
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:#fbf3e4;
+    border:2px solid transparent;
+    border-radius:10px;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .lock-input:focus{ border-color:var(--rose); box-shadow:0 0 0 4px rgba(232,160,172,.25); }
+  .lock-btn{
+    width:100%;
+    margin-top:14px;
+    padding:12px;
+    border:none; cursor:pointer;
+    font-family:var(--font-label); font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(135deg, var(--rose-deep), var(--magenta));
+    border-radius:30px;
+    transition:filter .2s ease, transform .1s ease;
+  }
+  .lock-btn:hover{ filter:brightness(1.08); }
+  .lock-btn:active{ transform:scale(.98); }
+  .lock-err{
+    margin:12px 0 0; min-height:18px; font-size:12.5px;
+    font-family:var(--font-label); color:#ffb3c9;
+  }
+  .lock-hint{
+    margin:18px 0 0; font-size:11px; font-family:var(--font-label);
+    color:rgba(251,243,228,.38); line-height:1.6;
+  }
 </style>
 </head>
 <body>
+
+<div id="lock" role="dialog" aria-modal="true" aria-label="Enter the passcode">
+  <div class="lock-card">
+    <div class="lock-emoji">💌</div>
+    <h1 class="lock-title">Just for you,<br>Jennerino</h1>
+    <p class="lock-sub">enter our little passcode ♡</p>
+    <input class="lock-input" id="lockInput" type="password" autocomplete="off" maxlength="20" placeholder="••••••">
+    <button class="lock-btn" id="lockBtn">open the letter</button>
+    <p class="lock-err" id="lockErr"></p>
+    <p class="lock-hint">psst — a little surprise from Dannerino.<br>It's sealed until the right words come in :)</p>
+  </div>
+</div>
 
 <div class="ambient" id="ambient"></div>
 
@@ -521,6 +597,48 @@
 
 <script>
 (function(){
+
+  // ================= LOCK SCREEN =================
+  // 🔑 CHANGE THIS LINE to your own secret passcode.
+  // Pick something only the two of you know — an anniversary date,
+  // a nickname, a place. Letters and numbers both work.
+  var LOCK_PASSCODE = "25012026";
+
+  var lockEl   = document.getElementById("lock");
+  var lockIn   = document.getElementById("lockInput");
+  var lockBtn  = document.getElementById("lockBtn");
+  var lockErr  = document.getElementById("lockErr");
+  var STORE_KEY = "lovelock_unlocked_v1";
+
+  function unlockSite(){
+    lockEl.style.display = "none";
+    try{ localStorage.setItem(STORE_KEY, "1"); }catch(e){}
+  }
+
+  function tryPass(){
+    var val = lockIn.value.trim();
+    if(val.toLowerCase() === LOCK_PASSCODE.toLowerCase()){
+      lockErr.textContent = "";
+      unlockSite();
+    } else {
+      lockErr.textContent = "hmm, not quite — try again? ♥";
+      lockIn.value = "";
+      lockIn.focus();
+    }
+  }
+
+  // If she already unlocked on this device before, skip the lock screen.
+  var preUnlocked = false;
+  try{ preUnlocked = localStorage.getItem(STORE_KEY) === "1"; }catch(e){}
+
+  if(preUnlocked){
+    lockEl.style.display = "none";
+  } else {
+    lockBtn.addEventListener("click", tryPass);
+    lockIn.addEventListener("keydown", function(e){ if(e.key === "Enter") tryPass(); });
+    lockIn.focus();
+  }
+  // ================= END LOCK =================
 
   var pages = [
     { emoji:"🧁", blocks:[
@@ -762,3 +880,4 @@
 </script>
 </body>
 </html>
+
