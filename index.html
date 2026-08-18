@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Love Letter — 200 Days</title>
+<style>
+  :root{
+    --bg-1:#241a29;
+    --bg-2:#3c2a44;
+    --bg-3:#4a2f3f;
+    --paper:#fbf3e4;
+    --paper-2:#f5ead3;
+    --rule:#e3d2ae;
+    --margin-line:#e2a3ae;
+    --ink:#3d2b2e;
+    --ink-soft:#8a7368;
+    --rose:#e8a0ac;
+    --rose-deep:#d1499a;
+    --gold:#caa24c;
+    --gold-deep:#a97f2e;
+    --mint:#5fa78c;
+    --lavender:#7c8fc2;
+    --magenta:#cf4497;
+    --sage:#7fa268;
+    --glass-hi:rgba(255,255,255,.20);
+    --glass-lo:rgba(255,255,255,.04);
+    --font-script:"Snell Roundhand","Bradley Hand","Segoe Script","Apple Chancery",cursive;
+    --font-hand:"Noteworthy","Comic Sans MS","Segoe Print",cursive;
+    --font-body:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --font-label:-apple-system,"Avenir Next","Helvetica Neue",Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 70% 45% at 25% 0%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,190,200,.08), transparent 60%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  button{font-family:inherit;}
+  ::selection{background:var(--rose); color:#fff;}
+
+  a{color:inherit;}
+
+  /* ---------- ambient floating hearts ---------- */
+  .ambient{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+  .ambient span{
+    position:absolute; bottom:-10%; font-size:14px; opacity:.18; color:var(--rose);
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0;}
+    10%{opacity:.22;}
+    90%{opacity:.14;}
+    100%{ transform:translateY(-115vh) translateX(20px) rotate(25deg); opacity:0;}
+  }
+
+  /* ---------- HUB ---------- */
+  #hub{
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:8vh 20px 6vh;
+    text-align:center;
+    transition:opacity .5s ease, filter .5s ease, transform .5s ease;
+  }
+  #hub.dimmed{opacity:0; filter:blur(6px); transform:scale(.97); pointer-events:none;}
+
+  .eyebrow{
+    font-family:var(--font-label);
+    font-size:11px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:rgba(255,235,240,.55);
+    margin:0 0 14px;
+  }
+
+  h1.title{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:clamp(42px, 8vw, 74px);
+    line-height:1;
+    margin:0;
+    color:#fbf3e4;
+    text-shadow:0 2px 22px rgba(0,0,0,.35);
+  }
+
+  .subtitle{
+    font-family:var(--font-body);
+    font-style:italic;
+    color:rgba(251,243,228,.72);
+    font-size:clamp(13px,2.2vw,16px);
+    margin:14px 0 0;
+    max-width:420px;
+  }
+
+  .day-pill{
+    display:inline-flex;
+    align-items:baseline;
+    gap:9px;
+    margin:20px 0 0;
+    padding:9px 20px;
+    border-radius:30px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.20);
+    backdrop-filter:blur(6px);
+  }
+  .day-pill .num{
+    font-family:var(--font-script);
+    font-size:28px;
+    line-height:1;
+    color:var(--rose);
+  }
+  .day-pill .lbl{
+    font-family:var(--font-label);
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.6);
+  }
+
+  /* ---------- jars ---------- */
+  .jars{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:flex-start;
+    gap:40px 30px;
+    margin-top:18px;
+  }
+  .jar-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:clamp(190px,42vw,240px);
+  }
+  .jar-label{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:clamp(20px,3.6vw,25px);
+    margin:0;
+    color:#fbf3e4;
+    text-shadow:0 2px 14px rgba(0,0,0,.3);
+  }
+  .jar-caption{
+    margin:16px 0 0;
+    font-family:var(--font-label);
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.42);
+  }
+
+  .jar-wrap{
+    position:relative;
+    width:100%;
+    margin:18px auto 0;
+    perspective:900px;
+  }
+  .jar-empty .jar-body{ opacity:.7; }
+  .ghost-env{
+    position:absolute; left:50%; top:54%; transform:translate(-50%,-50%) rotate(-3deg);
+    width:66px; height:46px;
+    border:1.5px dashed rgba(255,255,255,.4);
+    border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-label); font-size:9.5px; letter-spacing:.03em;
+    line-height:1.35; text-align:center; padding:4px;
+    color:rgba(255,255,255,.5);
+  }
+  .jar-lid{
+    width:46%;
+    height:26px;
+    margin:0 auto;
+    border-radius:14px;
+    background:linear-gradient(180deg,#e6c274,var(--gold-deep));
+    box-shadow:0 3px 0 rgba(0,0,0,.2), inset 0 -3px 4px rgba(0,0,0,.18), inset 0 2px 2px rgba(255,255,255,.4);
+    position:relative; z-index:4;
+  }
+  .jar-neck{
+    width:38%;
+    height:16px;
+    margin:-3px auto 0;
+    background:linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+    border-left:1.5px solid rgba(255,255,255,.35);
+    border-right:1.5px solid rgba(255,255,255,.35);
+    position:relative; z-index:3;
+  }
+  .jar-body{
+    position:relative;
+    width:100%;
+    height:min(60vw,240px);
+    margin-top:-2px;
+    border-radius:26px 26px 58px 58px/26px 26px 90px 90px;
+    background:
+      linear-gradient(100deg, rgba(255,255,255,.22), rgba(255,255,255,.02) 35%, rgba(255,255,255,.10) 70%, rgba(255,255,255,.22)),
+      linear-gradient(200deg, rgba(255,205,215,.10), rgba(180,200,255,.06));
+    border:1.5px solid rgba(255,255,255,.30);
+    box-shadow:inset 0 -26px 46px rgba(0,0,0,.20), inset 0 10px 18px rgba(255,255,255,.08), 0 26px 50px rgba(0,0,0,.38);
+    overflow:visible;
+    z-index:2;
+  }
+  .jar-body::after{
+    content:"";
+    position:absolute; left:10%; top:6%; width:14%; height:70%;
+    background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0));
+    border-radius:50%;
+    filter:blur(2px);
+    pointer-events:none;
+  }
+
+  .envelopes{position:absolute; inset:0;}
+
+  .env{
+    position:absolute;
+    width:64px; height:44px;
+    background:var(--paper);
+    border-radius:3px 3px 5px 5px;
+    box-shadow:0 6px 12px rgba(0,0,0,.30), 0 1px 0 rgba(255,255,255,.5) inset;
+    cursor:pointer;
+    border:none;
+    padding:0;
+    transition:transform .25s ease, box-shadow .25s ease;
+    outline-offset:3px;
+  }
+  .env:hover, .env:focus-visible{
+    transform:translateY(-6px) rotate(0deg) scale(1.05) !important;
+    box-shadow:0 14px 22px rgba(0,0,0,.4);
+    z-index:20 !important;
+  }
+  .env-flap{
+    position:absolute; top:0; left:0; right:0; height:60%;
+    clip-path:polygon(0 0,100% 0,50% 100%);
+  }
+  .env-seal{
+    position:absolute; left:50%; top:58%; transform:translate(-50%,-50%);
+    width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #e8c988, var(--gold-deep));
+    color:#4a2f10;
+    font-family:var(--font-label); font-weight:700; font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 3px rgba(0,0,0,.35);
+  }
+  .env-emoji{
+    position:absolute; top:-9px; right:-8px; font-size:15px;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
+  }
+  .env-done::before{
+    content:"♥";
+    position:absolute; bottom:-8px; left:-6px;
+    font-size:12px; color:var(--rose-deep);
+    text-shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+
+  /* scattered placement */
+  .env:nth-child(1){ left:6%;  bottom:6%;  transform:rotate(-9deg);  z-index:6;  }
+  .env:nth-child(2){ left:34%; bottom:2%;  transform:rotate(6deg);   z-index:7;  }
+  .env:nth-child(3){ left:58%; bottom:10%; transform:rotate(-4deg);  z-index:8;  }
+  .env:nth-child(4){ left:14%; bottom:30%; transform:rotate(4deg);   z-index:9;  }
+  .env:nth-child(5){ left:42%; bottom:34%; transform:rotate(-7deg);  z-index:10; }
+  .env:nth-child(6){ left:22%; bottom:56%; transform:rotate(8deg);   z-index:11; }
+
+  .env:nth-child(1) .env-flap{background:var(--rose);}
+  .env:nth-child(2) .env-flap{background:var(--mint);}
+  .env:nth-child(3) .env-flap{background:var(--lavender);}
+  .env:nth-child(4) .env-flap{background:var(--magenta);}
+  .env:nth-child(5) .env-flap{background:var(--sage);}
+  .env:nth-child(6) .env-flap{background:var(--gold);}
+
+  .hub-hint{
+    margin-top:26px;
+    font-family:var(--font-label);
+    font-size:12px;
+    letter-spacing:.05em;
+    color:rgba(251,243,228,.55);
+  }
+
+  .signoff{
+    margin-top:38px;
+    font-family:var(--font-script);
+    font-size:20px;
+    color:rgba(251,243,228,.55);
+  }
+
+  /* ---------- READER ---------- */
+  #reader{
+    position:fixed; inset:0; z-index:30;
+    display:flex; align-items:center; justify-content:center;
+    padding:min(6vh,40px) 18px;
+    opacity:0; pointer-events:none;
+    transform:scale(.96);
+    transition:opacity .45s ease, transform .45s ease;
+  }
+  #reader.active{ opacity:1; pointer-events:auto; transform:scale(1); }
+
+  .paper{
+    position:relative;
+    width:min(680px,92vw);
+    max-height:88vh;
+    background:
+      repeating-linear-gradient(var(--paper) 0 33px, var(--rule) 33px 34px),
+      var(--paper);
+    border-radius:6px;
+    box-shadow:0 30px 60px rgba(0,0,0,.5), 0 2px 0 rgba(255,255,255,.3) inset;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .paper::before{ /* margin rule */
+    content:"";
+    position:absolute; top:0; bottom:0; left:52px; width:1.5px;
+    background:var(--margin-line); opacity:.55;
+  }
+  .paper[data-parity="odd"]{ transform:rotate(-.4deg); }
+  .paper[data-parity="even"]{ transform:rotate(.4deg); }
+
+  .paper-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:22px 30px 10px 62px;
+    font-family:var(--font-label); font-size:11px; letter-spacing:.06em;
+    color:var(--ink-soft);
+    flex:0 0 auto;
+  }
+  .paper-head span i{
+    font-style:normal; border-bottom:1px dashed var(--ink-soft); padding-bottom:1px;
+  }
+
+  .paper-body{
+    flex:1 1 auto;
+    overflow-y:auto;
+    padding:6px 34px 46px 62px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--rose) transparent;
+  }
+  .paper-body::-webkit-scrollbar{width:8px;}
+  .paper-body::-webkit-scrollbar-thumb{background:var(--rose); border-radius:8px;}
+
+  .paper-body p{
+    font-size:clamp(15px,2vw,17px);
+    line-height:1.9;
+    margin:0 0 20px;
+    color:var(--ink);
+  }
+  .paper-body p strong{ letter-spacing:.03em; }
+  .paper-body p.ps{ font-style:italic; color:var(--ink-soft); margin-top:10px;}
+  .continues{
+    font-family:var(--font-label); font-style:italic; font-size:11.5px;
+    color:var(--ink-soft); text-align:right; margin-top:-8px;
+  }
+
+  .heading{
+    display:inline-block;
+    font-family:var(--font-label);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.06em;
+    padding:6px 12px;
+    border-radius:5px;
+    margin:6px 0 18px;
+  }
+  .heading--mint{ background:rgba(95,167,140,.16); color:var(--mint); border:1.4px solid var(--mint); }
+  .heading--lavender{ background:rgba(124,143,194,.16); color:var(--lavender); border:1.4px solid var(--lavender); }
+  .heading--magenta{ background:rgba(207,68,151,.14); color:var(--magenta); border:1.4px solid var(--magenta); }
+  .heading--sage{ background:rgba(127,162,104,.16); color:var(--sage); border:1.4px solid var(--sage); }
+
+  .letter-questions{ margin:4px 0 6px; padding-left:20px; }
+  .letter-questions li{
+    font-size:clamp(15px,2vw,17px); line-height:1.85; margin-bottom:12px; color:var(--ink);
+  }
+
+  .page-badge{
+    position:absolute; right:22px; bottom:16px;
+    width:30px; height:30px; border-radius:50%;
+    border:1.4px solid var(--ink-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-label); font-size:13px; color:var(--ink-soft);
+    background:var(--paper);
+  }
+  .page-stamp{
+    position:absolute; left:16px; top:14px; font-size:20px; opacity:.9;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));
+  }
+
+  /* nav controls */
+  .nav-btn{
+    position:fixed; top:50%; transform:translateY(-50%);
+    width:46px; height:46px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:#fbf3e4;
+    font-size:20px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; z-index:32;
+    backdrop-filter:blur(6px);
+    transition:background .2s ease, transform .2s ease, opacity .2s ease;
+  }
+  .nav-btn:hover{ background:rgba(255,255,255,.18); }
+  .nav-btn:disabled{ opacity:0; pointer-events:none; }
+  #prevBtn{ left:14px; }
+  #nextBtn{ right:14px; }
+
+  .close-btn{
+    position:fixed; top:20px; right:20px; z-index:33;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(255,255,255,.35);
+    color:#fbf3e4;
+    font-family:var(--font-label); font-size:12px; letter-spacing:.06em;
+    padding:9px 16px; border-radius:30px;
+    cursor:pointer; backdrop-filter:blur(6px);
+    display:flex; align-items:center; gap:6px;
+    transition:background .2s ease;
+  }
+  .close-btn:hover{ background:rgba(255,255,255,.18); }
+
+  .dots{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    display:flex; gap:9px; z-index:32;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,.3);
+    border:none; cursor:pointer; padding:0;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .dot.on{ background:var(--rose); transform:scale(1.3); }
+
+  /* finale */
+  .heart-burst{
+    position:fixed; z-index:40; pointer-events:none;
+    font-size:20px; color:var(--rose);
+    animation:pop 1.4s ease-out forwards;
+  }
+  @keyframes pop{
+    0%{ transform:translateY(0) scale(.6); opacity:0; }
+    15%{ opacity:1; }
+    100%{ transform:translateY(-140px) scale(1.1); opacity:0; }
+  }
+
+  @media (max-width:560px){
+    .paper-head{ padding-left:46px; }
+    .paper-body{ padding-left:46px; padding-right:22px; }
+    .paper::before{ left:36px; }
+    .page-stamp{ left:10px; }
+    .nav-btn{ width:40px; height:40px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.1s !important; }
+    .ambient{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+
+<main id="hub">
+  <p class="eyebrow">six pages &middot; kept safe &middot; still counting</p>
+  <h1 class="title">The Love Letter</h1>
+  <p class="subtitle">Two hundred days, six pages, one very long paragraph — unfolded again, just for you.</p>
+
+  <div class="day-pill">
+    <span class="num" id="dayNum">201</span>
+    <span class="lbl">days together</span>
+  </div>
+
+  <div class="jars">
+    <div class="jar-col">
+      <h2 class="jar-label">Dannerino's Jar</h2>
+      <div class="jar-wrap">
+        <div class="jar-lid"></div>
+        <div class="jar-neck"></div>
+        <div class="jar-body">
+          <div class="envelopes" id="envelopesDan"></div>
+        </div>
+      </div>
+      <p class="jar-caption">6 letters, from Jennerino ♡</p>
+    </div>
+
+    <div class="jar-col">
+      <h2 class="jar-label">Jennerino's Jar</h2>
+      <div class="jar-wrap jar-empty">
+        <div class="jar-lid"></div>
+        <div class="jar-neck"></div>
+        <div class="jar-body">
+          <div class="ghost-env">your turn,<br>Dannerino</div>
+        </div>
+      </div>
+      <p class="jar-caption">waiting for day 300 ♡</p>
+    </div>
+  </div>
+
+  <p class="hub-hint">tap a letter to unfold it ♡</p>
+  <p class="signoff">kept safe, always — Dannerino</p>
+</main>
+
+<section id="reader" aria-hidden="true">
+  <button class="close-btn" id="closeBtn">✕ back to the jar</button>
+  <button class="nav-btn" id="prevBtn" aria-label="Previous page">‹</button>
+  <button class="nav-btn" id="nextBtn" aria-label="Next page">›</button>
+  <div class="dots" id="dots"></div>
+  <article class="paper" id="paper">
+    <div class="paper-head">
+      <span>No. <i id="pageNoField">1</i></span>
+      <span>Date <i>12 August</i></span>
+    </div>
+    <div class="page-stamp" id="pageStamp">🧁</div>
+    <div class="paper-body" id="paperBody"></div>
+    <div class="page-badge" id="pageBadge">1</div>
+  </article>
+</section>
+
+<script>
+(function(){
+
+  var pages = [
+    { emoji:"🧁", blocks:[
+      {t:"p", c:"Hi Dannerino! Happy 200 days hehe :) This is only valid if you read this on 12 August (IF YOU DID NOT FORGET TO OPEN IT HAHA) Here's a cupcake for you if you remember :o Actually I thought I'll already be in China by this time, but there's still 4 more days left. I wonder if I already have my luggage packed, maybe you can ask me haha."},
+      {t:"p", c:"Oh btw, I'm writing this on our 180 days so technically I should be able to remember what I wrote, but this might turn out to be longer than I thought since I still haven't get to the point why this exist hahah."},
+      {t:"p", c:"Okay so, let me introduce this new game we will be playing hopefully for as long as possible. This game is called <strong>THE LOVE LETTER</strong> where we basically take turns in writing letter for each other. Like for example, I wrote this for you on 200 days, so you will read it then write me a letter back on 300 days and so on."},
+      {t:"p", c:"I hope you find this game interesting and entertaining, not pressuring :) This is one of my shower thoughts when I was thinking &lsquo;Hmm... how can I make the upcoming long distance life of us special?&rsquo; I wanted to put the letter behind the collage I gave you but did not managed to make time writing it, so I thought maybe I can give it to you on Saturday."},
+      {t:"p", c:"Some reasons why I think this could be a fun game is because FIRST OF ALL I like to talk, like a lot. But with your more and more busy work and my going to start uni life, having time to talk might become a luxury. Plus, sometimes there are things that I'm shy to tell you in person and as a zoomer, I somehow find text messages boring hahaha, like I can't see your expression or feel the warmth between words. While writing letters is also about words, I can read your handwriting which are unique and we need to really make time to sit and write. And idk there's something special about reading letters that will make my heart goes aww (idk how to draw puppy eyes, so you'll have to imagine hahaha)"},
+      {t:"p", c:"SECONDLY writing letters can be done when we miss each other, which is kinda sweet to be honest hehe, and re-reading the letters is like a really cute &amp; small thing to do that adds a little bit of fun and hope to our life. It's like putting sprinkles on your ice cream or adding spice to your ayam gepuk, ooh, we add spice to life hahaha. Life always gets more interesting and it makes the time that we are not together less"}
+    ]},
+    { emoji:"🧁", blocks:[
+      {t:"p", c:"&hellip;torturing? And if you get sleepy reading it you can always save it for tomorrow hahaha, I wouldn't know. Here's another cupcake for you in case all the words bored you :o"},
+      {t:"p", c:"Anyway, I actually also came up with a format of how to write the letters. Just in case you don't know what to write or how to write."},
+      {t:"h", k:"mint", c:"INTRODUCTION"},
+      {t:"p", c:"&hellip;which is this long paragraph I'm writing now. You can write anything you wanna write, it doesn't even have to make sense, cuz I don't think I'm making any sense writing this hahaha. You can be creative telling how much you miss me, some random thoughts or something you wanted to tell me but then forgot (which is very likely gonna happen) It can be as long as you like :)"},
+      {t:"p", c:"Then moving on, we will be writing three things that we want to say. For example like, some funny things you never told me or some stories that I did not know about. Basically just anything you want to say, but we just categorise them into three parts."},
+      {t:"p", c:"Then lastly, we're gonna write three questions we wanna ask. Again, you can ask anything and I'll reply it in the next letter. You can choose to reply it in the introduction or the three things you wanna say, write freely. This is just a rough idea and we can always modify it :)"},
+      {t:"p", c:"Okay, the amount of words is getting serious by now hahaha. Hope it didn't scare you hehe, you don't have to read it and reply it in one sitting, we have 100 days for each letter after all. Oh and we can keep every letter then collect them in a jar or something, which is gonna be cute to look back."},
+      {t:"p", c:"Okay, enough talking. Time to move on to the next part."},
+      {t:"h", k:"lavender", c:"LITTLE THINGS YOU PROBABLY DIDNT KNOW"},
+      {t:"p", c:"I'm getting sick of black so I'll use blue for this. So, as you might or might not know, even though we talk everyday, there's still stuff I didn't tell you because it might seems weird bringing it up or I just didn't really find a right time to tell you hahaha."},
+      {t:"p", c:"Let's start with horoscope. Remember that day when we're having banana leaf and we talked about we're both capricorn? Actually I had some little"}
+    ]},
+    { emoji:"♑", blocks:[
+      {t:"p", c:"&hellip;stories about it that I didn't tell you haha. You know when we first started dating, eh actually before we even got together. Like when we're still in the talking stage. After I know when's your birthday, I was like eh, capricorn too!"},
+      {t:"p", c:"Then I did something, which looking back, seems stupid hahaha. Okay, what I did was like after you say something, for example, I remember you told me that if you had the chance, you would ask me to dance. And that was before we got together. Then I was like, wow okay. Then I go to xiao hong shu and search &lsquo;what does it mean when a capricorn guy says that to you&rsquo; HAHAHAHA For sure you didn't know this happened right hehe."},
+      {t:"p", c:"And it would also seem funny and silly if I tell you this when we're hanging out hahaha. You're probably gonna say &lsquo;BRUHH Lil Jennerino&rsquo;, then you're gonna make me shy because of all the silly love things I did hahah."},
+      {t:"p", c:"You know I actually thought I was being obvious by asking you out, even watching movie together. But you said I didn't give you any hints bruhhh. The bravest thing I've ever done in my entire life was asking you if you like me in the car hahaha. Bro my heart was literally thumping so loud as I fight with my inner self whether to ask you or not hahaha."},
+      {t:"p", c:"I actually thought you'll tell me when we went out for the second time, cuz like I remember we talked about the size of our hands and I said your hand is big, good for playing piano. Then you said something I will never forget haha. You said &lsquo;Yea, good for holding hands too&rsquo; and you stretched your hands out in front of me, and I was like &lsquo;yoooo brother&rsquo; but of course I didn't say anything hahaha. Maybe that's why you said I didn't give you any hints :o"},
+      {t:"p", c:"So after that, oh and also after the movie, I thought you gonna say something probably like &lsquo;Hey, I kinda like you&rsquo; or what. But instead you didn't, so I was a bit confused and decided to ask you. Just so you know when I said there's many first time things I've done with you, it includes asking you if you like me hahaha."},
+      {t:"p", c:"Oh you know, my students actually asked me who's the one that fell first. You or me. And I don't know too honestly. Because like in 2024 you probably had the intentions hahaha, I still remember you"}
+    ]},
+    { emoji:"🐻", blocks:[
+      {t:"p", c:"&hellip;asked me once, if I wanna hang out together after you come back from Thailand. But I told you my mum said no hahah."},
+      {t:"p", c:"Oh I also remember we talked about pets and you told me your sugar glider died. And that time I thought, bro why this guy obsessed with animals hahahah. Here, you get a bear for making till here, it's been very long I know."},
+      {t:"p", c:"Actually kinda impressive that I have so many things to say, certified yapper I guess. Or maybe I'm just an overthinker who has like hundreds of thoughts everyday."},
+      {t:"p", c:"Oh you asked what language my inner voice speaks in. I think it depends, if my inner self is having a conversation with you then it's gonna be in English. At this point the speed of my writing can't even catch up with my own thoughts hahaha."},
+      {t:"h", k:"magenta", c:"THINGS YOU DID THAT MAKE ME FEEL AWW"},
+      {t:"p", c:"Yayy, we've finally made it to another part. If I don't stop myself just now idk how long this is gonna be hahaha. All the economics essays I've written have completely transformed me into a writing machine hahah. Oh I switched to black again for some reason."},
+      {t:"p", c:"Okay to start off, I have to tell you that it's magical? Uh, maybe wonderful? Okay maybe not wonderful, uh interesting? Okay we'll use interesting."},
+      {t:"p", c:"It's interesting that after we got together, I find that I am calmer or less emotional, in a good way of course. Like back then I get upset, angry, frustrated easily, over some minor issues. But now, even though you said I'm always moody at the beginning of every month, I can feel myself getting more relaxed and less annoyed by small matters."},
+      {t:"p", c:"Your words are like magic, they heal my mood despite lacking emotional assurance hahah. It doesn't mean it's bad, you're like a capybara, seems nonchalant about everything other than food or sleep. Oh, and me. You care about me right? Hehe :)"},
+      {t:"p", c:"And one thing that I was surprised about is you simply accept the fact that I have a bear called nian gao and you even played with me. It's adorable that you still play with me and listened to my made up story of nian gao being"}
+    ]},
+    { emoji:"💌", blocks:[
+      {t:"p", c:"&hellip;allergic to peanuts hahaha. I don't normally tell people that because they might call me a weirdo, but you call me cutie instead :)"},
+      {t:"h", k:"sage", c:"LAST FEW THINGS I WANNA SAY BFR LEAVING"},
+      {t:"p", c:"As sad as it's going to be, we're gonna have to only get to see each other few times a year soon. And there's a few things I wanna say, time to get emotional hahaha. I honestly hope I won't cry saying goodbye to you cause I don't wanna look ugly."},
+      {t:"p", c:"Actually time flies, like can you imagine it's already been 200 days? Wow. And the fact that we didn't even had any arguments is damn impressive. I mean, of course I don't want any argument between us, but I think it really is impressive, although I did get angry a few times hahaha. But most of the time we're able to talk about it calmly, without getting emotional. We should definitely keep it this way."},
+      {t:"p", c:"Oh and, I think I told you before, how I think you're a wise man and you make every problem seems like no biggie. But you know, I want to be able to make you feel that way too. I want to be the person you talk to when you have problems, I want to make you feel safe and you can always talk to me no matter what."},
+      {t:"p", c:"Sometimes, I'll feel like you teach me a lot of things, how to be calm, how to be strong, how to keep motivate yourself to do things that seem hard. But I feel like I can't teach you anything, of course other than chinese, and I wanna teach you more than that, but it seems like you're fine even on your own and I'm sad not because of that, but because I feel like you don't need me :o"},
+      {t:"p", c:"Although I already talk a lot, I would like you to share about your life too. Don't just always say GOOD when I ask how was your day :o hahaha I'm not mad."},
+      {t:"p", c:"Okay, quick summary. We have to agree to always tell each other things or problems or feelings, like when we miss each other. I think that's very important. Oh and here are my three questions for you"},
+      {t:"ol", items:[
+        "Do you think I truly see the real you?",
+        "Is there something you wish I'd do?",
+        "Tell me about some stories that I didn't know &amp; will add more to what I know about you."
+      ]}
+    ]},
+    { emoji:"💕", blocks:[
+      {t:"p", c:"Okay, don't get freaked out by so many words hahaha. It's gonna end. Gentle reminder, you can pause between writing and always continue later, and you can elaborate on everything :) (this is a wink) Okay byeee. Love you!"},
+      {t:"p", class:"ps", c:"P.S. Don't miss me too much hehe :o"}
+    ]}
+  ];
+
+  var continues = [true, true, true, true, false, false];
+
+  var opened = new Set();
+  var current = 0;
+  var readerOpenedOnce = false;
+
+  var envWrap   = document.getElementById("envelopesDan");
+  var hub       = document.getElementById("hub");
+  var reader    = document.getElementById("reader");
+  var paperBody = document.getElementById("paperBody");
+  var paperEl   = document.getElementById("paper");
+  var pageBadge = document.getElementById("pageBadge");
+  var pageStamp = document.getElementById("pageStamp");
+  var pageNoFld = document.getElementById("pageNoField");
+  var dotsWrap  = document.getElementById("dots");
+  var prevBtn   = document.getElementById("prevBtn");
+  var nextBtn   = document.getElementById("nextBtn");
+  var closeBtn  = document.getElementById("closeBtn");
+  var dayNumEl  = document.getElementById("dayNum");
+
+  // live day counter — Day 200 was 12 August 2026, the day this first
+  // letter was written. Counts itself up automatically after that.
+  var day200Anchor = new Date(2026, 7, 12); // month is 0-indexed: 7 = August
+  function updateDayCount(){
+    var now = new Date();
+    var a = new Date(day200Anchor.getFullYear(), day200Anchor.getMonth(), day200Anchor.getDate());
+    var b = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var diff = Math.round((b - a) / 86400000);
+    if(dayNumEl) dayNumEl.textContent = 200 + diff;
+  }
+  updateDayCount();
+  setInterval(updateDayCount, 60 * 60 * 1000);
+
+  // build envelopes
+  pages.forEach(function(pg, i){
+    var b = document.createElement("button");
+    b.className = "env";
+    b.setAttribute("aria-label", "Open letter page " + (i+1) + " of 6");
+    b.innerHTML =
+      '<span class="env-flap"></span>' +
+      '<span class="env-seal">' + (i+1) + '</span>' +
+      '<span class="env-emoji">' + pg.emoji + '</span>';
+    b.addEventListener("click", function(){ openReader(i); });
+    envWrap.appendChild(b);
+  });
+
+  // build dots
+  pages.forEach(function(_, i){
+    var d = document.createElement("button");
+    d.className = "dot";
+    d.setAttribute("aria-label", "Go to page " + (i+1));
+    d.addEventListener("click", function(){ render(i); });
+    dotsWrap.appendChild(d);
+  });
+
+  function renderPaper(i){
+    var pg = pages[i];
+    paperBody.innerHTML = "";
+    pg.blocks.forEach(function(block){
+      if(block.t === "p"){
+        var p = document.createElement("p");
+        if(block.class) p.className = block.class;
+        p.innerHTML = block.c;
+        paperBody.appendChild(p);
+      } else if(block.t === "h"){
+        var h = document.createElement("div");
+        h.className = "heading heading--" + block.k;
+        h.innerHTML = block.c;
+        paperBody.appendChild(h);
+      } else if(block.t === "ol"){
+        var ol = document.createElement("ol");
+        ol.className = "letter-questions";
+        block.items.forEach(function(it){
+          var li = document.createElement("li");
+          li.innerHTML = it;
+          ol.appendChild(li);
+        });
+        paperBody.appendChild(ol);
+      }
+    });
+    if(continues[i]){
+      var c = document.createElement("p");
+      c.className = "continues";
+      c.textContent = "flip for more →";
+      paperBody.appendChild(c);
+    }
+    paperBody.scrollTop = 0;
+    pageBadge.textContent = (i+1);
+    pageStamp.textContent = pg.emoji;
+    pageNoFld.textContent = (i+1) + " of 6";
+    paperEl.setAttribute("data-parity", i % 2 === 0 ? "odd" : "even");
+
+    prevBtn.disabled = (i === 0);
+    nextBtn.disabled = (i === pages.length - 1);
+
+    Array.prototype.forEach.call(dotsWrap.children, function(d, idx){
+      d.classList.toggle("on", idx === i);
+    });
+  }
+
+  function markOpened(i){
+    if(opened.has(i)) return;
+    opened.add(i);
+    envWrap.children[i].classList.add("env-done");
+    if(opened.size === pages.length){
+      burstHearts();
+    }
+  }
+
+  function render(i){
+    current = i;
+    renderPaper(i);
+    markOpened(i);
+  }
+
+  function openReader(i){
+    render(i);
+    reader.classList.add("active");
+    reader.setAttribute("aria-hidden", "false");
+    hub.classList.add("dimmed");
+  }
+
+  function closeReader(){
+    reader.classList.remove("active");
+    reader.setAttribute("aria-hidden", "true");
+    hub.classList.remove("dimmed");
+  }
+
+  closeBtn.addEventListener("click", closeReader);
+  prevBtn.addEventListener("click", function(){ if(current > 0) render(current - 1); });
+  nextBtn.addEventListener("click", function(){ if(current < pages.length - 1) render(current + 1); });
+
+  document.addEventListener("keydown", function(e){
+    if(!reader.classList.contains("active")) return;
+    if(e.key === "ArrowRight" && current < pages.length - 1) render(current + 1);
+    if(e.key === "ArrowLeft" && current > 0) render(current - 1);
+    if(e.key === "Escape") closeReader();
+  });
+
+  function burstHearts(){
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for(var n = 0; n < 18; n++){
+      (function(){
+        var h = document.createElement("div");
+        h.className = "heart-burst";
+        h.textContent = "♥";
+        h.style.left = (10 + Math.random() * 80) + "vw";
+        h.style.bottom = "6vh";
+        h.style.animationDelay = (Math.random() * .6) + "s";
+        h.style.fontSize = (14 + Math.random() * 16) + "px";
+        document.body.appendChild(h);
+        setTimeout(function(){ h.remove(); }, 2200);
+      })();
+    }
+  }
+
+  // ambient floating hearts
+  (function(){
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var wrap = document.getElementById("ambient");
+    var glyphs = ["♡","✦","♥"];
+    for(var i = 0; i < 10; i++){
+      var s = document.createElement("span");
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = (Math.random() * 100) + "vw";
+      s.style.animationDuration = (16 + Math.random() * 14) + "s";
+      s.style.animationDelay = (Math.random() * -20) + "s";
+      s.style.fontSize = (10 + Math.random() * 14) + "px";
+      wrap.appendChild(s);
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
