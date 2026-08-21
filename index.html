@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>The Love Letter — 200 Days</title>
+<title>Our Love Letters</title>
 <style>
   :root{
     --bg-1:#241a29;
@@ -610,12 +610,11 @@
 <div class="ambient" id="ambient"></div>
 
 <main id="hub">
-  <p class="eyebrow">six pages &middot; kept safe &middot; still counting</p>
-  <h1 class="title">The Love Letter</h1>
-  <p class="subtitle">Two hundred days, six pages, one very long paragraph — unfolded again, just for you.</p>
+  <h1 class="title">Our Love Letters</h1>
+  <p class="subtitle"><span id="subtitleDays">206</span> days, <span id="subtitlePages">6</span> pages, and counting</p>
 
   <div class="day-pill">
-    <span class="num" id="dayNum">201</span>
+    <span class="num" id="dayNum">206</span>
     <span class="lbl">days together</span>
   </div>
 
@@ -805,15 +804,20 @@
   var closeBtn  = document.getElementById("closeBtn");
   var dayNumEl  = document.getElementById("dayNum");
 
-  // live day counter — Day 200 was 12 August 2026, the day this first
-  // letter was written. Counts itself up automatically after that.
-  var day200Anchor = new Date(2026, 7, 12); // month is 0-indexed: 7 = August
+  // live day counter — Day 1 was 25 January 2026, the day we got together.
+  // Counts itself up automatically after that.
+  var day1Anchor = new Date(2026, 0, 25); // month is 0-indexed: 0 = January — day 1 of the relationship
   function updateDayCount(){
     var now = new Date();
-    var a = new Date(day200Anchor.getFullYear(), day200Anchor.getMonth(), day200Anchor.getDate());
+    var a = new Date(day1Anchor.getFullYear(), day1Anchor.getMonth(), day1Anchor.getDate());
     var b = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     var diff = Math.round((b - a) / 86400000);
-    if(dayNumEl) dayNumEl.textContent = 200 + diff;
+    var count = 1 + diff;
+    if(dayNumEl) dayNumEl.textContent = count;
+    var subEl = document.getElementById("subtitleDays");
+    if(subEl) subEl.textContent = count;
+    var pageEl = document.getElementById("subtitlePages");
+    if(pageEl) pageEl.textContent = pages.length;
   }
   updateDayCount();
   setInterval(updateDayCount, 60 * 60 * 1000);
