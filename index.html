@@ -338,8 +338,9 @@
     overflow-y:auto;
     padding:33px 34px 46px 62px;
     background:
-      repeating-linear-gradient(var(--paper) 0 var(--line), var(--rule) var(--line) calc(var(--line) + 1px)),
+      repeating-linear-gradient(var(--paper) 0 calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px) var(--line)),
       var(--paper);
+    background-attachment:local;
     scrollbar-width:thin;
     scrollbar-color:var(--rose) transparent;
   }
