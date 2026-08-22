@@ -531,6 +531,145 @@
     .music-ctrl{ width:34px; height:34px; font-size:12px; }
   }
 
+  /* ---------- ADD LETTER (UPLOAD) ---------- */
+  .add-letter-btn{
+    margin-top:14px;
+    font-family:var(--font-label);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(251,243,228,.5);
+    background:none;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:30px;
+    padding:8px 16px;
+    cursor:pointer;
+    backdrop-filter:blur(6px);
+    transition:color .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .add-letter-btn:hover{ color:#fbf3e4; border-color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); }
+
+  #uploadModal{
+    position:fixed; inset:0; z-index:60;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(20,12,24,.55);
+    backdrop-filter:blur(4px);
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  #uploadModal.active{ opacity:1; pointer-events:auto; }
+  .upload-card{
+    width:min(520px,94vw);
+    max-height:88vh;
+    overflow-y:auto;
+    background:linear-gradient(160deg, #2e2136, #3c2a44);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:18px;
+    padding:26px 24px 22px;
+    box-shadow:0 24px 60px rgba(0,0,0,.5);
+    font-family:var(--font-label);
+    color:#fbf3e4;
+  }
+  .upload-card h2{
+    font-family:var(--font-script);
+    font-weight:400;
+    font-size:26px;
+    margin:0 0 4px;
+    color:#fbf3e4;
+  }
+  .upload-sub{
+    font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(251,243,228,.5); margin:0 0 18px;
+  }
+  .dropzone{
+    border:1.5px dashed rgba(255,255,255,.3);
+    border-radius:12px;
+    padding:26px 16px;
+    text-align:center;
+    font-size:12.5px;
+    color:rgba(251,243,228,.65);
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .dropzone.drag{ border-color:var(--rose); background:rgba(232,160,172,.08); }
+  .dropzone button{
+    background:none; border:none; color:var(--rose); cursor:pointer;
+    font-family:inherit; font-size:12.5px; text-decoration:underline;
+  }
+  .upload-pages{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;
+  }
+  .upload-page{
+    position:relative;
+    width:86px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1.5px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.06);
+  }
+  .upload-page img{
+    width:100%; height:64px; object-fit:cover; display:block;
+  }
+  .upload-page .pg-num{
+    position:absolute; top:4px; left:4px;
+    background:rgba(0,0,0,.55); color:#fff;
+    font-size:10px; padding:1px 6px; border-radius:8px;
+  }
+  .upload-page .pg-x{
+    position:absolute; top:2px; right:2px;
+    width:18px; height:18px; border-radius:50%;
+    border:none; background:rgba(0,0,0,.55); color:#fff;
+    font-size:10px; line-height:1; cursor:pointer;
+  }
+  .upload-page .pg-move{
+    display:flex; justify-content:center; gap:4px; padding:3px 0;
+  }
+  .upload-page .pg-move button{
+    background:none; border:none; color:rgba(251,243,228,.7);
+    font-size:11px; cursor:pointer; padding:0 4px;
+  }
+  .upload-page .pg-move button:hover{ color:#fff; }
+  .upload-page .pg-move button:disabled{ opacity:.25; cursor:default; }
+  .upload-fields{
+    display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;
+  }
+  .upload-fields label{
+    display:flex; flex-direction:column; gap:5px;
+    font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:rgba(251,243,228,.55);
+  }
+  .upload-fields select, .upload-fields input[type="date"]{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:8px;
+    color:#fbf3e4;
+    font-family:inherit; font-size:13px;
+    padding:7px 10px;
+  }
+  .upload-fields select option{ color:#3d2b2e; }
+  .upload-actions{
+    display:flex; justify-content:flex-end; gap:10px; margin-top:20px;
+  }
+  .upload-actions button{
+    font-family:var(--font-label); font-size:12px; letter-spacing:.06em;
+    padding:10px 18px; border-radius:30px; cursor:pointer;
+    border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.07); color:#fbf3e4;
+    transition:background .2s ease;
+  }
+  .upload-actions button:hover{ background:rgba(255,255,255,.16); }
+  .upload-actions .primary{
+    background:linear-gradient(135deg, var(--rose-deep), var(--magenta));
+    border:none;
+  }
+  .upload-actions .primary:hover{ filter:brightness(1.08); }
+  .upload-actions .primary:disabled{ opacity:.4; cursor:default; filter:none; }
+  .upload-hint{
+    margin:16px 0 0; font-size:11px; line-height:1.6;
+    color:rgba(251,243,228,.45);
+  }
+
   /* ---------- LOCK SCREEN ---------- */
   #lock{
     position:fixed; inset:0; z-index:100;
@@ -650,6 +789,8 @@
   <p class="hub-hint">tap a letter to unfold it ♡</p>
   <p class="signoff">kept safe, always — Dannerino</p>
 
+  <button class="add-letter-btn" id="addLetterBtn" type="button">✎ add a letter</button>
+
   <div class="music-player" id="musicPlayer">
     <div class="music-controls">
       <button class="music-ctrl" id="musicPrev" aria-label="Previous song">⏮</button>
@@ -660,6 +801,41 @@
     <div class="music-info" id="musicInfo">Paper Rings — Taylor Swift</div>
   </div>
 </main>
+
+<div id="uploadModal" aria-hidden="true">
+  <div class="upload-card">
+    <h2>a new letter</h2>
+    <p class="upload-sub">for the jar ♡</p>
+    <div class="dropzone" id="dropzone">
+      drop photos here, or <button type="button" id="pickBtn">choose files</button>
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    </div>
+    <div class="upload-pages" id="uploadPages"></div>
+    <div class="upload-fields">
+      <label>who wrote it
+        <select id="uploadAuthor">
+          <option value="jennerino">Jennerino</option>
+          <option value="dannerino">Dannerino</option>
+        </select>
+      </label>
+      <label>date
+        <input type="date" id="uploadDate">
+      </label>
+      <label>emoji
+        <select id="uploadEmoji">
+          <option>🧁</option><option>🌻</option><option>🐻</option>
+          <option>💌</option><option>💕</option><option>♑</option>
+          <option>🌸</option><option>🌙</option><option>✨</option>
+        </select>
+      </label>
+    </div>
+    <div class="upload-actions">
+      <button type="button" id="uploadCancel">cancel</button>
+      <button type="button" class="primary" id="uploadPackage" disabled>package letter ↓</button>
+    </div>
+    <p class="upload-hint">the letter is packaged as a small bundle (manifest + photos). save it into the site's <b>data/inbox/</b> folder, then ask Dannerino's assistant to transcribe it into the jar ♡</p>
+  </div>
+</div>
 
 <section id="reader" aria-hidden="true">
   <button class="close-btn" id="closeBtn">✕ back to the jar</button>
@@ -1003,6 +1179,126 @@
 
     // set the default track (Paper Rings)
     loadTrack(0);
+  })();
+
+  // ================= ADD LETTER (UPLOAD) =================
+  (function(){
+    var modal     = document.getElementById("uploadModal");
+    var openBtn   = document.getElementById("addLetterBtn");
+    var cancelBtn = document.getElementById("uploadCancel");
+    var dropzone  = document.getElementById("dropzone");
+    var pickBtn   = document.getElementById("pickBtn");
+    var fileIn    = document.getElementById("fileInput");
+    var pagesWrap = document.getElementById("uploadPages");
+    var authorEl  = document.getElementById("uploadAuthor");
+    var dateEl    = document.getElementById("uploadDate");
+    var emojiEl   = document.getElementById("uploadEmoji");
+    var pkgBtn    = document.getElementById("uploadPackage");
+    if(!modal || !openBtn) return;
+
+    var files = []; // {file, url}
+
+    function todayStr(){
+      var d = new Date();
+      var m = ("0" + (d.getMonth()+1)).slice(-2);
+      var day = ("0" + d.getDate()).slice(-2);
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+
+    function openModal(){
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+      if(!dateEl.value) dateEl.value = todayStr();
+    }
+    function closeModal(){
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    openBtn.addEventListener("click", openModal);
+    cancelBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", function(e){ if(e.target === modal) closeModal(); });
+
+    function addFiles(list){
+      Array.prototype.forEach.call(list, function(f){
+        if(!/^image\/(png|jpe?g|webp)$/i.test(f.type)) return;
+        files.push({ file:f, url:URL.createObjectURL(f) });
+      });
+      renderPages();
+    }
+
+    fileIn.addEventListener("change", function(){ addFiles(fileIn.files); fileIn.value = ""; });
+    pickBtn.addEventListener("click", function(e){ e.stopPropagation(); fileIn.click(); });
+    dropzone.addEventListener("click", function(){ fileIn.click(); });
+    ["dragover","dragenter"].forEach(function(ev){
+      dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.add("drag"); });
+    });
+    ["dragleave","drop"].forEach(function(ev){
+      dropzone.addEventListener(ev, function(e){ e.preventDefault(); dropzone.classList.remove("drag"); });
+    });
+    dropzone.addEventListener("drop", function(e){
+      if(e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+    });
+
+    function renderPages(){
+      pagesWrap.innerHTML = "";
+      files.forEach(function(item, i){
+        var el = document.createElement("div");
+        el.className = "upload-page";
+        el.innerHTML =
+          '<img src="' + item.url + '" alt="page ' + (i+1) + '">' +
+          '<span class="pg-num">' + (i+1) + '</span>' +
+          '<button class="pg-x" type="button" aria-label="remove">✕</button>' +
+          '<div class="pg-move">' +
+            '<button type="button" ' + (i===0 ? 'disabled' : '') + ' data-move="-1">‹</button>' +
+            '<button type="button" ' + (i===files.length-1 ? 'disabled' : '') + ' data-move="1">›</button>' +
+          '</div>';
+        el.querySelector(".pg-x").addEventListener("click", function(){
+          URL.revokeObjectURL(item.url);
+          files.splice(i, 1);
+          renderPages();
+        });
+        el.querySelectorAll(".pg-move button").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var dir = parseInt(btn.getAttribute("data-move"), 10);
+            var j = i + dir;
+            if(j < 0 || j >= files.length) return;
+            var tmp = files[i]; files[i] = files[j]; files[j] = tmp;
+            renderPages();
+          });
+        });
+        pagesWrap.appendChild(el);
+      });
+      pkgBtn.disabled = files.length === 0;
+    }
+
+    function download(name, blob){
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    }
+
+    pkgBtn.addEventListener("click", function(){
+      if(!files.length) return;
+      var manifest = {
+        author: authorEl.value,
+        date: dateEl.value || todayStr(),
+        emoji: emojiEl.value,
+        pages: files.map(function(item, i){
+          var ext = (item.file.name.match(/\.(\w+)$/) || [,"jpg"])[1].toLowerCase();
+          return { file: "page-" + (i+1) + "." + ext, name: item.file.name };
+        })
+      };
+      download("manifest.json", new Blob([JSON.stringify(manifest, null, 2)], { type:"application/json" }));
+      files.forEach(function(item, i){
+        var ext = (item.file.name.match(/\.(\w+)$/) || [,"jpg"])[1].toLowerCase();
+        download("page-" + (i+1) + "." + ext, item.file);
+      });
+      closeModal();
+    });
   })();
 
 })();
