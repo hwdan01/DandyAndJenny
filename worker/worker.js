@@ -27,6 +27,15 @@ function json(obj, status = 200) {
   });
 }
 
+// Unicode-safe base64 — btoa() alone fails on emoji / non-Latin1 characters
+// (e.g. the letter's emoji in the manifest).
+function b64encode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -71,7 +80,7 @@ async function handleUpload(request, env) {
 
     // Commit the manifest
     const manifestPath = `data/inbox/${letterId}/manifest.json`;
-    const manifestB64 = btoa(JSON.stringify(manifest || {}));
+    const manifestB64 = b64encode(JSON.stringify(manifest || {}));
     const mres = await putFile(env, manifestPath, manifestB64, `Add letter ${letterId} manifest`);
     results.push({ path: manifestPath, status: mres.status });
 
