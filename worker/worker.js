@@ -75,14 +75,14 @@ async function handleUpload(request, env) {
       if (!p.name || !p.base64) continue;
       const path = `data/inbox/${letterId}/${p.name}`;
       const res = await putFile(env, path, p.base64, `Add letter ${letterId} (${p.name})`);
-      results.push({ path, status: res.status });
+      results.push({ path, status: res.status, detail: res.detail });
     }
 
     // Commit the manifest
     const manifestPath = `data/inbox/${letterId}/manifest.json`;
     const manifestB64 = b64encode(JSON.stringify(manifest || {}));
     const mres = await putFile(env, manifestPath, manifestB64, `Add letter ${letterId} manifest`);
-    results.push({ path: manifestPath, status: mres.status });
+    results.push({ path: manifestPath, status: mres.status, detail: mres.detail });
 
     const ok = results.every(r => r.status >= 200 && r.status < 300);
     return json({ ok, results });
@@ -109,5 +109,10 @@ async function putFile(env, path, base64Content, message) {
   }
 
   const res = await fetch(url, { method: "PUT", headers, body: JSON.stringify(body) });
-  return res;
+  let detail = "";
+  try {
+    const data = await res.json();
+    detail = data.message || "";
+  } catch (e) { /* non-JSON response */ }
+  return { status: res.status, detail };
 }
