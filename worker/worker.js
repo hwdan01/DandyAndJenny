@@ -94,6 +94,7 @@ async function handleUpload(request, env) {
 async function putFile(env, path, base64Content, message) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
   const headers = {
+    "User-Agent": "ourloveletters-worker",
     "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
     "Accept": "application/vnd.github+json",
     "Content-Type": "application/json",
