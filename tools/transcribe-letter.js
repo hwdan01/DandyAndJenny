@@ -61,6 +61,7 @@ if (data.letters.some(l => l.id === letterId)) {
 }
 data.letters.push({
   id: letterId,
+  author: manifest.author || 'jennerino',
   emoji: manifest.emoji || '💌',
   continues: false,
   blocks
