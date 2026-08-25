@@ -1,0 +1,14 @@
+name = "ourloveletters"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Workers AI binding -- powers the /ocr transcription endpoint.
+# The binding is exposed in the Worker as `env.AI`.
+# Free tier of Workers AI is sufficient for testing.
+[ai]
+binding = "AI"
+
+# Which vision model to use for handwriting OCR.
+# llava-1.5-7b is a good balance; llama-3.2-11b-vision is higher quality but slower.
+[vars]
+OCR_MODEL = "@cf/llava-hf/llava-1.5-7b-hf"
