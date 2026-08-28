@@ -1,2 +1,6 @@
 backups/
 data/inbox/
+data/letters/*.typed.txt
+data/letters/*.transcript.txt
+backups/*.bundle
+backups/_*.json

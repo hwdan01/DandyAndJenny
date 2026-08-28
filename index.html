@@ -810,7 +810,7 @@
           <div class="ghost-env" id="ghostJen">your turn,<br>Dannerino</div>
         </div>
       </div>
-      <p class="jar-caption" id="jarCaptionJen">waiting for day 300 ♡</p>
+      <p class="jar-caption" id="jarCaptionJen">0 letters, from Dannerino ♡</p>
     </div>
   </div>
 
@@ -931,7 +931,7 @@
     var capDan = document.getElementById("jarCaptionDan");
     var capJen = document.getElementById("jarCaptionJen");
     if(capDan) capDan.textContent = fromJen + " letter" + (fromJen === 1 ? "" : "s") + ", from Jennerino \u2661";
-    if(capJen) capJen.textContent = fromDan > 0 ? (fromDan + " letter" + (fromDan === 1 ? "" : "s") + ", from Dannerino \u2661") : "waiting for day 300 \u2661";
+    if(capJen) capJen.textContent = fromDan + " letter" + (fromDan === 1 ? "" : "s") + ", from Dannerino \u2661";
     var ghostJen = document.getElementById("ghostJen");
     var jenWrap  = document.getElementById("jenWrapJen");
     if(fromDan > 0){
