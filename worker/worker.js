@@ -19,7 +19,8 @@
 //                                             (query: &model=<alternate-model>)
 //   GET  /pending                         --> letterIds uploaded but not yet in the jar
 //   POST /publish                         --> commit a new encrypted data/letters.json
-//                                             (body: letterId, author, emoji, cipherText)
+//                                             (add:    letterId, author, emoji, cipherText
+//                                              remove: letterId, remove:true, cipherText)
 //                                             optional gate: Worker secret PUBLISH_PIN,
 //                                             sent by the browser as "X-Publish-Pin"
 
@@ -260,10 +261,11 @@ async function listFolder(env, path) {
 async function handlePublish(request, env) {
   try {
     const body = await request.json();
-    const { letterId, author, emoji, cipherText, baseSha } = body;
+    const { letterId, author, emoji, cipherText, baseSha, remove } = body;
+    const isRemove = remove === true;
 
     if (!letterId || !cipherText) return json({ ok: false, error: "missing letterId or cipherText" }, 400);
-    if (author !== "jennerino" && author !== "dannerino") {
+    if (!isRemove && author !== "jennerino" && author !== "dannerino") {
       return json({ ok: false, error: "author must be jennerino or dannerino" }, 400);
     }
     let parsed;
@@ -289,13 +291,18 @@ async function handlePublish(request, env) {
     }
 
     const put = await putFile(env, "data/letters.json", b64encode(cipherText),
-      `Add letter ${letterId} to the jar (${author})`);
+      isRemove ? `Remove letter ${letterId} from the jar`
+               : `Add letter ${letterId} to the jar (${author})`);
     if (put.status < 200 || put.status >= 300) {
       return json({ ok: false, error: "commit failed: " + (put.detail || put.status), results: [put] }, 502);
     }
 
-    // Best-effort cleanup: the inbox bundle has been transcribed into the jar.
-    const deleted = await deleteFolder(env, `data/inbox/${letterId}`);
+    // Best-effort cleanup: the inbox bundle and any photo pages for this
+    // letter are removed along with it (404s here are fine).
+    const deleted = [
+      ...(await deleteFolder(env, `data/inbox/${letterId}`)),
+      ...(await deleteFolder(env, `data/letters/${letterId}`)),
+    ];
 
     return json({ ok: true, put, deleted });
   } catch (e) {

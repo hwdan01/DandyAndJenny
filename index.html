@@ -446,6 +446,23 @@
   }
   .close-btn:hover{ background:rgba(255,255,255,.18); }
 
+  .remove-btn{
+    position:fixed; bottom:20px; left:20px; z-index:33;
+    background:rgba(255,255,255,.08);
+    border:1.5px solid rgba(255,255,255,.35);
+    color:#fbf3e4;
+    font-family:var(--font-label); font-size:12px; letter-spacing:.06em;
+    padding:9px 16px; border-radius:30px;
+    cursor:pointer; backdrop-filter:blur(6px);
+    display:flex; align-items:center; gap:6px;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .remove-btn:hover{ background:rgba(255,255,255,.18); }
+  .remove-btn.arm{
+    border-color:#ffb3c9; color:#ffb3c9;
+    background:rgba(209,73,154,.18);
+  }
+
   .dots{
     position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
     display:flex; gap:9px; z-index:32;
@@ -476,6 +493,7 @@
     .paper::before{ left:36px; }
     .page-stamp{ left:10px; }
     .nav-btn{ width:40px; height:40px; }
+    .remove-btn{ bottom:16px; left:16px; }
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -931,6 +949,7 @@
 
 <section id="reader" aria-hidden="true">
   <button class="close-btn" id="closeBtn">✕ back to the jar</button>
+  <button class="remove-btn" id="removeBtn" type="button">✕ remove this letter</button>
   <button class="nav-btn" id="prevBtn" aria-label="Previous page">‹</button>
   <button class="nav-btn" id="nextBtn" aria-label="Next page">›</button>
   <div class="dots" id="dots"></div>
@@ -1106,6 +1125,11 @@
   var nextBtn   = document.getElementById("nextBtn");
   var closeBtn  = document.getElementById("closeBtn");
   var dayNumEl  = document.getElementById("dayNum");
+  var removeBtn = document.getElementById("removeBtn");
+
+  // The Cloudflare Worker that relays uploads/publishes into the GitHub repo.
+  // This URL is public (not a secret) — the GitHub token lives inside the Worker.
+  var WORKER_URL = "https://ourloveletters.weidan-hng.workers.dev";
 
   // live day counter — Day 1 was 25 January 2026, the day we got together.
   // Counts itself up automatically after that.
@@ -1208,11 +1232,15 @@
     });
   }
 
+  // `opened` tracks letter ids (not indexes) so it stays correct after removals.
+  function pageKey(p, i){ return (p && p.id) ? p.id : ("#" + i); }
+
   function markOpened(i){
-    if(opened.has(i)) return;
-    opened.add(i);
+    var key = pageKey(pages[i], i);
+    if(opened.has(key)) return;
+    opened.add(key);
     if(envEls[i]) envEls[i].classList.add("env-done");
-    if(opened.size === pages.length){
+    if(pages.length > 0 && pages.every(function(p, j){ return opened.has(pageKey(p, j)); })){
       burstHearts();
     }
   }
@@ -1225,6 +1253,7 @@
 
   function openReader(i){
     render(i);
+    resetRemoveBtn();
     reader.classList.add("active");
     reader.setAttribute("aria-hidden", "false");
     hub.classList.add("dimmed");
@@ -1234,6 +1263,7 @@
     reader.classList.remove("active");
     reader.setAttribute("aria-hidden", "true");
     hub.classList.remove("dimmed");
+    resetRemoveBtn();
   }
 
   closeBtn.addEventListener("click", closeReader);
@@ -1245,6 +1275,97 @@
     if(e.key === "ArrowRight" && current < pages.length - 1) render(current + 1);
     if(e.key === "ArrowLeft" && current > 0) render(current - 1);
     if(e.key === "Escape") closeReader();
+  });
+
+  // ---------- remove a letter (two-tap confirm, then browser-side crypto) ----------
+  var removeArmed = null;
+  function resetRemoveBtn(){
+    if(removeArmed){ clearTimeout(removeArmed); removeArmed = null; }
+    if(removeBtn){
+      removeBtn.classList.remove("arm");
+      removeBtn.textContent = "✕ remove this letter";
+      removeBtn.disabled = false;
+    }
+  }
+  function showRemoveError(msg){
+    if(removeBtn){
+      removeBtn.classList.add("arm");
+      removeBtn.textContent = msg;
+      removeBtn.disabled = false;
+    }
+  }
+
+  function removeLetter(id){
+    if(!id || !sessionPass) return;
+    if(removeBtn) removeBtn.disabled = true;
+    fetch("data/letters.json")
+      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(function(blob){ return decryptLetters(blob, sessionPass); })
+      .then(function(text){
+        var data = JSON.parse(text);
+        var before = (data.letters || []).length;
+        data.letters = (data.letters || []).filter(function(l){ return l.id !== id; });
+        if(data.letters.length === before) throw new Error("letter not found in the jar");
+        return encryptLetters(data, sessionPass);
+      })
+      .then(function(cipherText){
+        var headers = { "Content-Type": "application/json" };
+        try {
+          var pin = localStorage.getItem("publishPin");
+          if(pin) headers["X-Publish-Pin"] = pin;
+        } catch(e) { /* private mode */ }
+        return fetch(WORKER_URL + "/publish", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ letterId: id, remove: true, cipherText: cipherText })
+        });
+      })
+      .then(function(res){
+        return res.json().then(function(d){ return { status: res.status, data: d }; });
+      })
+      .then(function(result){
+        if(result.status === 401 && result.data && result.data.needsPin){
+          var pin = prompt("this jar has a publish pin — enter it once and it will be remembered on this device:");
+          if(pin){
+            try { localStorage.setItem("publishPin", pin); } catch(e) {}
+            removeLetter(id);
+            return;
+          }
+          resetRemoveBtn();
+          return;
+        }
+        if(result.status === 409 && result.data && result.data.conflict){
+          removeLetter(id);   // someone else changed the jar — the removal still applies
+          return;
+        }
+        if(result.data && result.data.ok){
+          pages = pages.filter(function(l){ return l.id !== id; });
+          opened.delete(id);
+          closeReader();
+          refreshJars();
+          if(window.refreshPending) window.refreshPending();
+        } else {
+          showRemoveError("couldn't remove — try again?");
+        }
+      })
+      .catch(function(err){
+        showRemoveError("couldn't remove — " + (err.message || "check your connection"));
+      });
+  }
+
+  if(removeBtn) removeBtn.addEventListener("click", function(){
+    var pg = pages[current];
+    if(!pg) return;
+    if(!removeArmed){
+      removeArmed = setTimeout(function(){ removeArmed = null; resetRemoveBtn(); }, 4000);
+      if(removeBtn){
+        removeBtn.classList.add("arm");
+        removeBtn.textContent = "tap again to remove forever";
+      }
+      return;
+    }
+    resetRemoveBtn();
+    removeLetter(pg.id);
   });
 
   function burstHearts(){
@@ -1473,10 +1594,6 @@
       });
       pkgBtn.disabled = files.length === 0;
     }
-
-    // The Cloudflare Worker that relays uploads into the GitHub repo.
-    // This URL is public (not a secret) — the GitHub token lives inside the Worker.
-    var WORKER_URL = "https://ourloveletters.weidan-hng.workers.dev";
 
     function setStatus(msg, isError){
       if(!statusEl) return;
