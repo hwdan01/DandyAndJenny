@@ -697,6 +697,50 @@
   }
   .upload-status.error{ color:#ffb3c9; }
 
+  /* ---------- JAR STUDIO (review + seal) ---------- */
+  .step-dots{
+    display:flex; gap:6px; justify-content:center; margin:0 0 14px;
+  }
+  .step-dots span{
+    width:7px; height:7px; border-radius:50%;
+    background:rgba(255,255,255,.18);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .step-dots span.on{ background:var(--rose); transform:scale(1.25); }
+  .review-area{
+    width:100%;
+    min-height:190px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:10px;
+    color:#fbf3e4;
+    font-family:var(--font-hand);
+    font-size:14px;
+    line-height:1.65;
+    padding:12px 14px;
+    resize:vertical;
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  .review-area:focus{ border-color:var(--rose); }
+  .review-meta{
+    font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color:rgba(251,243,228,.55); margin:12px 0 0;
+  }
+  .pending-hint{
+    margin:10px 0 0;
+    font-family:var(--font-label);
+    font-size:11px;
+    letter-spacing:.04em;
+    color:rgba(251,243,228,.55);
+  }
+  .pending-hint button{
+    background:none; border:none; cursor:pointer;
+    color:var(--rose); font-family:inherit; font-size:11px;
+    text-decoration:underline; padding:0 2px;
+  }
+  .pending-hint button:hover{ color:#fff; }
+
   /* ---------- LOCK SCREEN ---------- */
   #lock{
     position:fixed; inset:0; z-index:100;
@@ -818,6 +862,7 @@
   <p class="signoff">kept safe, always — Dannerino</p>
 
   <button class="add-letter-btn" id="addLetterBtn" type="button">✎ add a letter</button>
+  <p class="pending-hint" id="pendingHint" hidden></p>
 
   <div class="music-player" id="musicPlayer">
     <div class="music-controls">
@@ -832,37 +877,55 @@
 
 <div id="uploadModal" aria-hidden="true">
   <div class="upload-card">
-    <h2>a new letter</h2>
-    <p class="upload-sub">for the jar ♡</p>
-    <div class="dropzone" id="dropzone">
-      drop photos here, or <button type="button" id="pickBtn">choose files</button>
-      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    <div class="step-dots"><span id="stepDot1" class="on"></span><span id="stepDot2"></span></div>
+
+    <div id="upStep1">
+      <h2>a new letter</h2>
+      <p class="upload-sub">for the jar ♡</p>
+      <div class="dropzone" id="dropzone">
+        drop photos here, or <button type="button" id="pickBtn">choose files</button>
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" multiple hidden>
+      </div>
+      <div class="upload-pages" id="uploadPages"></div>
+      <div class="upload-fields">
+        <label>who wrote it
+          <select id="uploadAuthor">
+            <option value="jennerino">Jennerino</option>
+            <option value="dannerino">Dannerino</option>
+          </select>
+        </label>
+        <label>date
+          <input type="date" id="uploadDate">
+        </label>
+        <label>emoji
+          <select id="uploadEmoji">
+            <option>🧁</option><option>🌻</option><option>🐻</option>
+            <option>💌</option><option>💕</option><option>♑</option>
+            <option>🌸</option><option>🌙</option><option>✨</option>
+          </select>
+        </label>
+      </div>
+      <div class="upload-actions">
+        <button type="button" id="uploadCancel">cancel</button>
+        <button type="button" class="primary" id="uploadPackage" disabled>send to jar ♡</button>
+      </div>
+      <p class="upload-status" id="uploadStatus"></p>
+      <p class="upload-hint">the photos go to the jar's inbox — next you'll check the transcription and seal it in ♡</p>
     </div>
-    <div class="upload-pages" id="uploadPages"></div>
-    <div class="upload-fields">
-      <label>who wrote it
-        <select id="uploadAuthor">
-          <option value="jennerino">Jennerino</option>
-          <option value="dannerino">Dannerino</option>
-        </select>
-      </label>
-      <label>date
-        <input type="date" id="uploadDate">
-      </label>
-      <label>emoji
-        <select id="uploadEmoji">
-          <option>🧁</option><option>🌻</option><option>🐻</option>
-          <option>💌</option><option>💕</option><option>♑</option>
-          <option>🌸</option><option>🌙</option><option>✨</option>
-        </select>
-      </label>
+
+    <div id="upStep2" hidden>
+      <h2>review & seal</h2>
+      <p class="upload-sub">check the transcription, then seal it into the jar ♡</p>
+      <textarea class="review-area" id="reviewText" placeholder="the transcribed letter appears here — fix anything the reader misread…"></textarea>
+      <p class="review-meta" id="reviewMeta"></p>
+      <div class="upload-actions">
+        <button type="button" id="reviewBack">← back</button>
+        <button type="button" id="reviewLater">later ♡</button>
+        <button type="button" class="primary" id="reviewSeal">seal into the jar ♡</button>
+      </div>
+      <p class="upload-status" id="reviewStatus"></p>
+      <p class="upload-hint">sealing encrypts the letter right here in your browser — your passphrase never leaves this device — and adds it to the jar for both of you ♡</p>
     </div>
-    <div class="upload-actions">
-      <button type="button" id="uploadCancel">cancel</button>
-      <button type="button" class="primary" id="uploadPackage" disabled>send to jar ♡</button>
-    </div>
-    <p class="upload-status" id="uploadStatus"></p>
-    <p class="upload-hint">the letter is sent straight to the jar's inbox. once it's transcribed, a new envelope will appear here ♡</p>
   </div>
 </div>
 
@@ -907,13 +970,41 @@
     return arr;
   }
 
+  // Session crypto state -- lives in memory only, never stored, never sent
+  // anywhere. It lets "seal into the jar" re-encrypt without re-prompting.
+  var sessionPass = null;
+  var sessionKey  = null;
+
+  function bytesToB64(arr){
+    var raw = "";
+    for(var i=0;i<arr.length;i++) raw += String.fromCharCode(arr[i]);
+    return btoa(raw);
+  }
+
   function deriveKey(pass){
+    if(sessionKey && sessionPass === pass) return Promise.resolve(sessionKey);
     return crypto.subtle.importKey('raw', new TextEncoder().encode(pass), {name:'PBKDF2'}, false, ['deriveKey'])
       .then(function(k){
         return crypto.subtle.deriveKey(
           {name:'PBKDF2', salt:PASSPHRASE_SALT, iterations:PASSPHRASE_ITER, hash:'SHA-256'},
-          k, {name:'AES-GCM', length:256}, false, ['decrypt']);
+          k, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+      }).then(function(key){
+        sessionPass = pass;
+        sessionKey  = key;
+        return key;
       });
+  }
+
+  // Encrypts a letters-shaped object into the {iv, ct} envelope format.
+  // Must stay byte-compatible with tools/encrypt-letter.js (same salt/iter).
+  function encryptLetters(obj, pass){
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var plain = new TextEncoder().encode(JSON.stringify(obj, null, 2));
+    return deriveKey(pass).then(function(key){
+      return crypto.subtle.encrypt({name:'AES-GCM', iv:iv}, key, plain);
+    }).then(function(ct){
+      return JSON.stringify({ iv: bytesToB64(iv), ct: bytesToB64(new Uint8Array(ct)) });
+    });
   }
 
   function decryptLetters(blobText, pass){
@@ -940,6 +1031,17 @@
     }
   }
 
+  function refreshJars(){
+    envWrapDan.innerHTML = "";
+    envWrapJen.innerHTML = "";
+    dotsWrap.innerHTML = "";
+    envEls = [];
+    buildEnvelopes();
+    buildDots();
+    setCaptions();
+    updateDayCount();
+  }
+
   function finishUnlock(){
     lockEl.style.display = "none";
     buildEnvelopes();
@@ -947,6 +1049,7 @@
     updateDayCount();
     setCaptions();
     if(window.startMusic) window.startMusic();
+    if(window.refreshPending) window.refreshPending();
   }
 
   function tryPass(){
@@ -1269,7 +1372,20 @@
     var emojiEl   = document.getElementById("uploadEmoji");
     var pkgBtn    = document.getElementById("uploadPackage");
     var statusEl  = document.getElementById("uploadStatus");
+    var step1     = document.getElementById("upStep1");
+    var step2     = document.getElementById("upStep2");
+    var dot1      = document.getElementById("stepDot1");
+    var dot2      = document.getElementById("stepDot2");
+    var reviewText   = document.getElementById("reviewText");
+    var reviewMeta   = document.getElementById("reviewMeta");
+    var reviewStatus = document.getElementById("reviewStatus");
+    var sealBtn   = document.getElementById("reviewSeal");
+    var backBtn   = document.getElementById("reviewBack");
+    var laterBtn  = document.getElementById("reviewLater");
+    var pendingHint = document.getElementById("pendingHint");
     if(!modal || !openBtn) return;
+
+    var activeLetterId = null;
 
     var files = []; // {file, url}
 
@@ -1280,11 +1396,21 @@
       return d.getFullYear() + "-" + m + "-" + day;
     }
 
+    function showStep(n){
+      if(step1) step1.hidden = (n !== 1);
+      if(step2) step2.hidden = (n !== 2);
+      if(dot1) dot1.classList.toggle("on", n === 1);
+      if(dot2) dot2.classList.toggle("on", n === 2);
+      var card = modal.querySelector(".upload-card");
+      if(card) card.scrollTop = 0;
+    }
+
     function openModal(){
       modal.classList.add("active");
       modal.setAttribute("aria-hidden", "false");
       if(!dateEl.value) dateEl.value = todayStr();
       if(statusEl) statusEl.textContent = "";
+      showStep(1);
     }
     function closeModal(){
       modal.classList.remove("active");
@@ -1385,6 +1511,154 @@
       return "letter-" + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
     }
 
+    // ---------- Jar Studio: review + seal ----------
+    function setReviewStatus(msg, isError){
+      if(!reviewStatus) return;
+      reviewStatus.textContent = msg || "";
+      reviewStatus.classList.toggle("error", !!isError);
+    }
+
+    function metaLine(){
+      var who = (authorEl.value === "dannerino") ? "Dannerino" : "Jennerino";
+      return "by " + who + " · " + emojiEl.value + " · " + (dateEl.value || todayStr());
+    }
+
+    // OCR the uploaded pages and open the review step.
+    function openReview(letterId){
+      activeLetterId = letterId;
+      showStep(2);
+      if(reviewMeta) reviewMeta.textContent = metaLine();
+      if(reviewText) reviewText.value = "";
+      if(sealBtn) sealBtn.disabled = true;
+      setReviewStatus("reading the handwriting…");
+      fetch(WORKER_URL + "/ocr?letterId=" + encodeURIComponent(letterId))
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(!data.ok) throw new Error(data.error || "OCR failed");
+          var merged = (data.results || []).map(function(r){ return r.text || ""; })
+            .join("\n\n").trim();
+          if(reviewText) reviewText.value = merged;
+          if(!merged) throw new Error("no words came through");
+          setReviewStatus("check it over — fix any words it misread, then seal ♡");
+          if(sealBtn) sealBtn.disabled = false;
+        })
+        .catch(function(err){
+          setReviewStatus("couldn't read it automatically (" + (err.message || "unknown") +
+            ") — type the letter below instead, or try again later", true);
+          if(sealBtn) sealBtn.disabled = false;
+        });
+    }
+
+    // Letters uploaded but not yet sealed (from any device).
+    function refreshPending(){
+      if(!pendingHint) return;
+      fetch(WORKER_URL + "/pending")
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          var list = (data && data.ok && data.pending) || [];
+          pendingHint.innerHTML = "";
+          if(!list.length){ pendingHint.hidden = true; return; }
+          pendingHint.hidden = false;
+          pendingHint.appendChild(document.createTextNode(
+            list.length === 1 ? "1 letter waiting to be transcribed — " :
+            list.length + " letters waiting — "));
+          list.forEach(function(id, i){
+            var b = document.createElement("button");
+            b.type = "button";
+            b.textContent = "review" + (i < list.length - 1 ? ", " : "");
+            b.addEventListener("click", function(){
+              openModal();
+              openReview(id);
+            });
+            pendingHint.appendChild(b);
+          });
+        })
+        .catch(function(){ pendingHint.hidden = true; });
+    }
+    window.refreshPending = refreshPending;
+
+    if(backBtn) backBtn.addEventListener("click", function(){ showStep(1); });
+    if(laterBtn) laterBtn.addEventListener("click", function(){
+      closeModal();
+      refreshPending();
+    });
+
+    // Seal: decrypt -> add -> re-encrypt (all in this browser) -> commit via Worker.
+    if(sealBtn) sealBtn.addEventListener("click", function(){
+      if(!activeLetterId) return;
+      var raw = reviewText ? reviewText.value : "";
+      // blank-line separated paragraphs -> typed blocks (same as publish-letter.js)
+      var reviewed = raw.split("\n").filter(function(l){ return l.indexOf("//") !== 0; }).join("\n").trim();
+      var blocks = reviewed.split(/\n\s*\n/).filter(function(s){ return s.trim(); })
+        .map(function(p){ return { t:"p", c:p.trim() }; });
+      if(!blocks.length){ setReviewStatus("write (or fix) the letter first ♡", true); return; }
+      sealBtn.disabled = true;
+      setReviewStatus("sealing…");
+
+      fetch("data/letters.json")
+        .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+        .then(function(blob){ return decryptLetters(blob, sessionPass); })
+        .then(function(text){
+          var data = JSON.parse(text);
+          var entry = { id: activeLetterId, author: authorEl.value, emoji: emojiEl.value, continues: false, blocks: blocks };
+          var existing = (data.letters || []).find(function(l){ return l.id === activeLetterId; });
+          if(existing) Object.assign(existing, entry);
+          else (data.letters = data.letters || []).push(entry);
+          return encryptLetters(data, sessionPass);
+        })
+        .then(function(cipherText){
+          var headers = { "Content-Type": "application/json" };
+          try {
+            var pin = localStorage.getItem("publishPin");
+            if(pin) headers["X-Publish-Pin"] = pin;
+          } catch(e) { /* private mode */ }
+          return fetch(WORKER_URL + "/publish", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({ letterId: activeLetterId, author: authorEl.value, emoji: emojiEl.value, cipherText: cipherText })
+          });
+        })
+        .then(function(res){
+          return res.json().then(function(data){ return { status: res.status, data: data }; });
+        })
+        .then(function(result){
+          if(result.status === 401 && result.data && result.data.needsPin){
+            var pin = prompt("this jar has a publish pin — enter it once and it will be remembered on this device:");
+            if(pin){
+              try { localStorage.setItem("publishPin", pin); } catch(e) {}
+              sealBtn.disabled = false;
+              sealBtn.click();
+              return;
+            }
+            setReviewStatus("a publish pin is required to seal letters", true);
+            sealBtn.disabled = false;
+            return;
+          }
+          if(result.status === 409 && result.data && result.data.conflict){
+            setReviewStatus("someone else just added a letter — trying again…");
+            sealBtn.disabled = false;
+            sealBtn.click();
+            return;
+          }
+          if(result.data && result.data.ok){
+            var entry = { id: activeLetterId, author: authorEl.value, emoji: emojiEl.value, continues: false, blocks: blocks };
+            var idx = pages.findIndex(function(l){ return l.id === activeLetterId; });
+            if(idx >= 0) pages[idx] = entry; else pages.push(entry);
+            refreshJars();
+            setReviewStatus("sealed! ♡ it's in the jar now");
+            refreshPending();
+            setTimeout(function(){ closeModal(); showStep(1); }, 1500);
+          } else {
+            setReviewStatus("hmm, that didn't go through — " + ((result.data && result.data.error) || "try again?"), true);
+            sealBtn.disabled = false;
+          }
+        })
+        .catch(function(err){
+          setReviewStatus("couldn't seal — " + (err.message || "check your connection"), true);
+          sealBtn.disabled = false;
+        });
+    });
+
     pkgBtn.addEventListener("click", function(){
       if(!files.length) return;
       pkgBtn.disabled = true;
@@ -1416,10 +1690,9 @@
         return res.json().then(function(data){ return { ok: res.ok, data: data }; });
       }).then(function(result){
         if(result.ok && result.data.ok){
-          setStatus("sent! ♡ it'll be transcribed into the jar soon");
           files = [];
           renderPages();
-          setTimeout(closeModal, 1600);
+          openReview(id);
         } else {
           var detail = result.data.error;
           if(!detail && result.data.results){
