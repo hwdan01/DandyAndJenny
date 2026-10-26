@@ -198,7 +198,7 @@ async function handleOcr(url, env) {
       const bytes = new Uint8Array(await imgRes.arrayBuffer());
 
       // `runAi` auto-accepts Llama license-gated models (prompt "agree") on first use.
-      const out = await runAi(env, model, { image: [...bytes], prompt: OCR_PROMPT, max_tokens: 4000 });
+      const out = await runAi(env, model, { image: [...bytes], prompt: OCR_PROMPT, max_tokens: 1024 });
       const text =
         typeof out === "string" ? out
           : (out && (out.response || out.description || out.answer))
