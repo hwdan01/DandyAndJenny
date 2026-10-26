@@ -1650,7 +1650,7 @@
       if(reviewText) reviewText.value = "";
       if(sealBtn) sealBtn.disabled = true;
       setReviewStatus("reading the handwriting…");
-      fetch(WORKER_URL + "/ocr?letterId=" + encodeURIComponent(letterId))
+      fetch(WORKER_URL + "/ocr?letterId=" + encodeURIComponent(letterId) + "&model=" + encodeURIComponent("@cf/meta/llama-3.2-11b-vision-instruct"))
         .then(function(r){ return r.json(); })
         .then(function(data){
           if(!data.ok) throw new Error(data.error || "OCR failed");
